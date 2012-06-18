@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h2>Login</h2>
+    <form action="/login" method="POST" class="well form-inline">
+        <input type="text" class="input-large" name="username" placeholder="username">
+        <input type="password" class="input-large" name="password" placeholder="Password">
+        <button type="submit" class="btn">Sign in</button>
+    </form>
+{% endblock %}
