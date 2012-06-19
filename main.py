@@ -1,21 +1,14 @@
 from flask import Flask, request, render_template, abort, \
                   session, g, redirect, flash, url_for
 
-#CONFIGURATION
-SQLALCHEMY_DATABASE_URI = 'mysql://root:prakhar@localhost/election'
-DEBUG = True
-SECRET_KEY = '7\xe9\xcf\x17\x11\x92I|\xbc\x85\xc8\xc1u\x18\xbb\xec\xc9\xe2\xbb,\x9fX'
-USERNAME = 'admin'
-PASSWORD = 'default'
-
-from flask import Flask
 from datetime import datetime
 import MySQLdb
 from flask.ext.sqlalchemy import SQLAlchemy
 from lib import ldap_helper
+import config
 
 app = Flask(__name__)
-app.config.from_object(__name__)
+app.config.from_object(config)
 db = SQLAlchemy(app)
 
 @app.route('/')
@@ -55,8 +48,7 @@ def logout():
 
 @app.route('/admin')
 def admin():
-    return "Hello Admin, you can add candidates here"
+    return render_template("add_candidates.html")
 
 if __name__ == "__main__":
     app.run()
-
