@@ -4,11 +4,12 @@ class Config(object):
     SESSION_COOKIE_NAME = 'votingApp'
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:prakhar@localhost/election'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:prakhar@localhost/voting_app'
 
 class DevelopmentConfig(Config):
     DEBUG = True
     USERNAME = 'admin'
     PASSWORD = 'admin'
+    ADMIN_COUPON = 'admin'
     SQLALCHEMY_DATABASE_URI = 'mysql://root:prakhar@localhost/election'
 

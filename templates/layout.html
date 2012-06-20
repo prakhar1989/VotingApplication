@@ -16,7 +16,7 @@
       }
     </style>
     <link href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}" rel="stylesheet">
-
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -38,7 +38,10 @@
           <div class="nav-collapse">
             {% if session.logged_in %}
             <ul class="nav pull-right">
-                <li><p class="navbar-text">Welcome, {{ session.username }}</p></li>
+
+                <li><p class="navbar-text"><i class="icon-user icon-white"></i>
+                    {{ session.username }}</p>
+                </li>
                 <li class="divider-vertical"></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
@@ -57,6 +60,10 @@
     </div>
     {% endfor %}
 
+    <script type=text/javascript>
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+
     {% block body %}{% endblock %}
       <hr>
       <footer>
@@ -66,6 +73,7 @@
     </div> <!-- /container -->
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/application.js')}}"></script>
   </body>
 </html>
 

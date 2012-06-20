@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class='row'>
+    <div class="span8">
+        <form id="coupon_form" method="POST" action="/coupon/new" class="well form-inline">
+            <input type="text" class="input" name="username" placeholder="new username">
+            <input type="password" class="input" name="password" placeholder="Admin Password">
+            <input type="submit" class="btn btn-inverse" value="Generate Coupon"></button>
+        </form>
+    </div>
+    <div class="span4">
+        <h4>Coupon generated</h4>
+        <h2 id="coupon_value"></h2>
+        <span class="label label-important" id="show_message"></span>
+    </div>
+</div>
+
+{% endblock %}
