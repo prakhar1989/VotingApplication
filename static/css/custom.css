@@ -1,0 +1,14 @@
+/* Add CSS from http://action.io */
+section{
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+.user_details img{
+    float: left;
+    margin-left: 40px;
+}
+
+.user_details dl{
+    float: right;
+}

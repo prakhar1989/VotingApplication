@@ -15,7 +15,6 @@
         padding-bottom: 40px;
       }
     </style>
-    <link href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -40,7 +39,12 @@
             <ul class="nav pull-right">
 
                 <li><p class="navbar-text"><i class="icon-user icon-white"></i>
-                    {{ session.username }}</p>
+                {% if session.admin %}
+                    "Admin"
+                {% else %}
+                    {{ session.username }}
+                {% endif %}
+                </p>
                 </li>
                 <li class="divider-vertical"></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
@@ -73,6 +77,7 @@
     </div> <!-- /container -->
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/mustache.js')}}"></script>
     <script src="{{ url_for('static', filename='js/application.js')}}"></script>
   </body>
 </html>

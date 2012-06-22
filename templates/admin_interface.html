@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
+<section>
 <div class='row'>
+    <div class="page-header">
+        <h2>Generate Coupons <small>Add coupons for new users</small></h2>
+    </div>
     <div class="span8">
         <form id="coupon_form" method="POST" action="/coupon/new" class="well form-inline">
             <input type="text" class="input" name="username" placeholder="new username">
@@ -9,10 +13,64 @@
         </form>
     </div>
     <div class="span4">
-        <h4>Coupon generated</h4>
-        <h2 id="coupon_value"></h2>
-        <span class="label label-important" id="show_message"></span>
+        <div class="coupon_gen">
+            <h4>Coupon generated</h4>
+            <h2 id="coupon_value"></h2>
+            <span class="label label-important" id="show_message"></span>
+        </div>
     </div>
 </div>
-
+</section>
+<section>
+<div class="row">
+    <div class="page-header">
+        <h2>Add Candidates <small>Add people contesting for elections</small></h2>
+    </div>
+    <div class="span7">
+        <form class="form-horizontal" id="add_candidate_form" method="POST" action="/candidate/new">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label">Candidate's Username</label>
+                    <div class="controls">
+                        <input type="text" class="input-xlarge" id="user_name" name="username">
+                        <p class="help-block">This has to be same as his BB username. eg. foob2013</p>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="optionsCheckbox">Type of Vote</label>
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" id="optionsCheckbox" name="binary_vote">
+                            Check if you want this candidate to have a Yes/No vote
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="select01">Select Post</label>
+                    <div class="controls">
+                        <select id="select01" name="post_select">
+                            {% for post in posts %}
+                            <option>{{ post.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <input type="submit" class="btn btn-primary" value="Add Candidate"></input>
+                    <input type="reset" class="btn" id="reset_btn" value="Reset"></input>
+                    <small class="add_status">
+                    </small>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="span5" id="candidate_details">
+        {% raw %}
+        <div class="user_details">
+        </div>
+        {% endraw %}
+    </div>
+</div>
+</section>
 {% endblock %}
+
