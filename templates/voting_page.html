@@ -1,6 +1,31 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h2>Welcome</h2>
+
+    <div class="row">
+        <div class="well span3" style="padding: 8px 0;">
+        <ul class="nav nav-list">
+            <li class="nav-header">
+                Posts 
+            </li>
+            {% for post in candidates_dict.keys() %}
+            <li><a href="#"><i class="icon-ok"></i>  {{ post.name }}</a></li>
+            {% endfor %}
+        </ul>
+        </div>
+        
+        <div class="post_listing span8">
+        {% for post in candidates_dict %}
+            <div class="post_well well">
+                <h2> {{ post.name }} </h2>
+                <ul>
+                {% for c in candidates_dict[post] %}
+               <li> {{ c.name }} </li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+
     <form action="/" method="POST">
         <input type="submit" class="btn btn-primary" value="Done Voting">
     </form>

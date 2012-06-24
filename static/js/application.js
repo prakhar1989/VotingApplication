@@ -17,7 +17,6 @@ $(function() {
         return false;
     });
 
-    
     $('#user_name').focusout(function(){
         var username = $("#user_name").val();
         var details_url = $SCRIPT_ROOT + '/candidate/' + username;

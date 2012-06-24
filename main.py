@@ -43,18 +43,21 @@ class Post(db.Model):
 
 
 class Candidate(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    name = db.Column(db.String(80), primary_key=True)
+    full_name = db.Column(db.String(200))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
     hostel = db.Column(db.String(80))
+    dept = db.Column(db.String(80)) #Department Number
     yes_no = db.Column(db.Boolean)
     #votes = db.relationship('Vote', backref='vote', lazy="dynamic")
 
-    def __init__(self, name, hostel, post_id, yes_no):
+    def __init__(self, name, full_name, hostel, post_id, dept, yes_no):
         self.name = name
+        self.full_name = full_name
         self.hostel = hostel
         self.post_id = post_id
         self.yes_no = yes_no
+        self.dept = dept
 
     def __repr__(self):
         return "<Candidate: %r, Post: %r>" % (self.name, self.post.name)
@@ -79,6 +82,14 @@ class Candidate(db.Model):
                                     #self.candidate_id, self.post_name)
 
 ### CONTROLLER ###
+
+def get_candidate_dict():
+    candidates_dict = {}
+    posts = Post.query.all()
+    for post in posts:
+        candidates_dict[post] = Candidate.query.filter_by(post_id=post.id).all()
+    return candidates_dict
+
 @app.route('/', methods=["GET", "POST"])
 def voting_page():
     if request.method == "GET":
@@ -86,14 +97,24 @@ def voting_page():
             flash("You need to login before you can start voting", "info")
             return redirect(url_for('login'))
         else:
-            return render_template("voting_page.html")
+            candidates_dict = get_candidate_dict()
+            return render_template("voting_page.html", candidates_dict = candidates_dict)
 
     else: #POST request
+        # logging logic goes here
+        # make sure to redirect to logout page
+        # after submission is done
         user_coupon = Coupon.query.filter_by(username=session['username']).first()
-        user_coupon.is_valid = False
-        db.session.add(user_coupon)
+        try:
+            user_coupon.is_valid = False
+            db.session.add(user_coupon)
+            db.session.flush()
+        except sqlalchemy.exc.IntegrityError as err:
+            app.logger.error("Failed to invalidate coupon")
+            return "Failed to invalidate coupon"
         db.session.commit()
         return "Coupon has been invalidated"
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -161,9 +182,16 @@ def generate_coupon():
     value= ""
     if password == app.config['PASSWORD']:
         value = "".join(random.choice(string.letters) for j in range(1,10))
-        db.session.add(Coupon(value, username))
-        db.session.commit()
-        return jsonify(coupon=value, msg="Success")
+        try:
+            db.session.add(Coupon(value, username))
+            db.session.flush()
+        except sqlalchemy.exc.IntegrityError as err:
+            #this fails in the rare event value already exists
+            value = "".join(random.choice(string.letters) for j in range(1,10))
+            app.logger.warning("Duplicate entry hit for new coupon : %r" % value)
+        finally:
+            db.session.commit()
+            return jsonify(coupon=value, msg="Success")
     else:
         return jsonify(coupon=value, msg="Incorrect Admin password")
 
@@ -176,10 +204,19 @@ def save_candidate():
         add_yesno = True
     else:
         add_yesno = False
-    hostel = ldap_helper.ldap_fetch_detail(username, ["hostel"])["hostel"]
+    user_details = ldap_helper.ldap_fetch_detail(username,
+                                                ["hostel", "displayName", "departmentNumber"])
     if username:
         candidate_post = Post.query.filter_by(name=post_select).first()
-        c1 = Candidate(username, hostel, candidate_post.id, add_yesno)
+        if user_details:
+            hostel = user_details["hostel"]
+            full_name = user_details["displayName"]
+            dept = user_details["departmentNumber"]
+        else:  #its Blank or Abstain
+            hostel = "All"
+            full_name = username
+            dept = "None" #TODO: Not to sure if this is how it should be
+        c1 = Candidate(username, full_name, hostel, candidate_post.id, dept, add_yesno)
         db.session.add(c1)
         db.session.commit()
         return jsonify(status_msg="Added %s to the database" % username)
@@ -198,6 +235,12 @@ def fetch_candidate_details(username):
                                     hostel=candidate_details["hostel"])
     else:
         return jsonify(name="No candidate found!")
+
+
+@app.route('/candidates')
+def return_candidates():
+    candidates = Candidate.query.all()
+    return render_template('list_candidates', candidates = candidates)
 
 if __name__ == "__main__":
     app.run()
