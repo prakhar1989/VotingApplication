@@ -69,16 +69,13 @@
     </script>
 
     {% block body %}{% endblock %}
-      <hr>
-      <footer>
-        <p>&copy; ISG 2012</p>
-      </footer>
 
     </div> <!-- /container -->
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/mustache.js')}}"></script>
     <script src="{{ url_for('static', filename='js/application.js')}}"></script>
+    {% block custom_js %}{% endblock %}
   </body>
 </html>
 

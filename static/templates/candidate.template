@@ -1,0 +1,10 @@
+<div class="candidate-tile">
+    <div class="candidate-image">
+        <img src="<%= candidate.image %>" width="50px" height=auto />
+    </div>
+    <div class="details">
+        <h3 class="candidate-name"><%= candidate.name %></h3>
+        <h6 class="candidate-dept"><%= candidate.dept %></h6>
+        <span class="label label-info"><%= candidate.hostel %></span>
+    </div>
+</div>

@@ -2,32 +2,33 @@
 {% block body %}
 
     <div class="row">
-        <div class="well span3" style="padding: 8px 0;">
-        <ul class="nav nav-list">
+        <div class="well span3" style="padding: 8px 0; margin-top: 20px;">
+        <ul class="nav nav-list post-list">
             <li class="nav-header">
                 Posts 
             </li>
             {% for post in candidates_dict.keys() %}
-            <li><a href="#"><i class="icon-ok"></i>  {{ post.name }}</a></li>
+            <li><a class="post_toggle_link" href="#/{{ post.id }}">{{ post.name }}</a></li>
             {% endfor %}
         </ul>
         </div>
-        
-        <div class="post_listing span8">
-        {% for post in candidates_dict %}
-            <div class="post_well well">
-                <h2> {{ post.name }} </h2>
-                <ul>
-                {% for c in candidates_dict[post] %}
-               <li> {{ c.name }} </li>
-                {% endfor %}
-                </ul>
-            </div>
-        {% endfor %}
+        <div class="span3">
+            <button class="btn btn-primary" style="margin-top: 20px;">
+                Submit My Vote!
+            </button>
+        </div>
+
+        <div class="span8">
+            <h1 class="post_heading"> </h1>
+            <div class="post_listing" id="main"> </div>
+        </div>
     </div>
 
-    <form action="/" method="POST">
-        <input type="submit" class="btn btn-primary" value="Done Voting">
-    </form>
 {% endblock %}
 
+
+{% block custom_js %}
+    <script src="{{ url_for('static', filename='js/sammy.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/sammy.template.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/voting_sammy.js')}}"></script>
+{% endblock %}

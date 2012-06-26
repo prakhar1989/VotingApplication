@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request, render_template, abort, \
-                  session, g, redirect, flash, url_for
+                  session, g, redirect, flash, url_for, Response
 from lib import ldap_helper
 import config
 import string
 import random
+import simplejson as json
 from flask.ext.sqlalchemy import SQLAlchemy
 import MySQLdb
 
@@ -241,6 +242,23 @@ def fetch_candidate_details(username):
 def return_candidates():
     candidates = Candidate.query.all()
     return render_template('list_candidates', candidates = candidates)
+
+
+@app.route('/post/<int:post_id>')
+def fetch_post_details(post_id):
+    post_name = Post.query.get(post_id).name
+    post_json = [post_name, []]
+    post_detail = Candidate.query.filter_by(post_id=post_id).all()
+    for c in post_detail:
+        # FIX THIS - Find a way of transferring heading
+        post_json[1].append({
+            "name" : c.full_name,
+            "dept" : c.dept,
+            "image" : "http://student.iimcal.ac.in/userimages/%s.jpg" % c.name,
+            "hostel" : c.hostel,
+            "yes_no" : c.yes_no
+        })
+    return Response(json.dumps(post_json), mimetype='application/json')
 
 if __name__ == "__main__":
     app.run()

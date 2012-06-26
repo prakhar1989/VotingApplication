@@ -48,4 +48,9 @@ $(function() {
         $('.user_details').hide();
         return false;
     });
+
+    $('.post_toggle_link').click(function(){
+        $(this).parent().siblings().removeClass('active');
+        $(this).parent().toggleClass('active');
+    });
 });
