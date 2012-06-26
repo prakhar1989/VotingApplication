@@ -6,6 +6,7 @@ import string
 import random
 import simplejson as json
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 import MySQLdb
 
 app = Flask(__name__)
@@ -105,7 +106,12 @@ def voting_page():
             return redirect(url_for('login'))
         else:
             candidates_dict = get_candidate_dict()
-            return render_template("voting_page.html", candidates_dict = candidates_dict)
+            if session.get("hostel"):
+                user_hostel = session["hostel"]
+                valid_post_list = db.session.query(Post).filter(or_(Post.applied_hostel == "LVH", Post.applied_hostel == "all")).all()
+            else:
+                valid_post_list = Post.query.all()
+            return render_template("voting_page.html", candidates_dict = candidates_dict, valid_post_list = valid_post_list)
 
     else: #POST request
         # logging logic goes here
@@ -149,6 +155,9 @@ def login():
 
         elif ldap_helper.ldap_authenticate(username, password) and \
                 user_coupon and user_coupon.value == coupon_code:
+
+            user_hostel = ldap_helper.ldap_fetch_detail(username, ["hostel"])
+            if user_hostel: session['hostel'] = user_hostel["hostel"]
             session['logged_in']= True
             session['username'] = username
             flash('You have logged in', "success")
@@ -165,6 +174,7 @@ def logout():
     session.pop('logged_in', None)
     session.pop('username', None)
     session.pop('is_admin', None)
+    session.pop('hostel', None)
     flash("You have successfully logged out", "success")
     return redirect(url_for('login'))
 
@@ -252,11 +262,16 @@ def return_candidates():
 
 @app.route('/post/<int:post_id>')
 def fetch_post_details(post_id):
-    post_name = Post.query.get(post_id).name
-    post_json = [post_name, []]
-    post_detail = Candidate.query.filter_by(post_id=post_id).all()
-    for c in post_detail:
-        # FIX THIS - Find a way of transferring heading
+    post_json = [[], []]
+    post = Post.query.get(post_id)
+    post_json[0].append({
+        "post_name" : post.name,
+        "post_max_votes" : post.max_votes,
+        "post_applied_hostel" : post.applied_hostel,
+        "post_help_text": post.help_text
+    })
+    post_candidate_details = Candidate.query.filter_by(post_id=post_id).all()
+    for c in post_candidate_details:
         post_json[1].append({
             "name" : c.full_name,
             "dept" : c.dept,

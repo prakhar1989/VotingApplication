@@ -11,7 +11,8 @@ var app = $.sammy('#main', function() {
         context.app.swap('');
         this.load('/post/' +  this.params['post_id'])
             .then(function(candidates){
-                $('.post_heading').text(candidates[0]);
+                //You can do much more with all the post_data generated
+                $('.post_heading').text(candidates[0][0]["post_name"]);
                 $.each(candidates[1], function(i, candidate){
                     context.render("static/templates/candidate.template", {candidate:candidate})
                     .appendTo(context.$element());
@@ -26,3 +27,5 @@ var app = $.sammy('#main', function() {
 });
 
 })(jQuery);
+
+// JmypfDuTZ

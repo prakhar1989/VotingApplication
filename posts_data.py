@@ -1,3 +1,6 @@
+from main import db
+from main import Post
+
 posts = [
 {
     "name": "IT Representative",
@@ -80,7 +83,7 @@ posts = [
 {
     "name": "LVH Hostel Representative",
     "max_votes" : 1,
-    "applied_hostel" : "all",
+    "applied_hostel" : "LVH",
     "help_text" : "Blank"
 },
 {
@@ -92,7 +95,7 @@ posts = [
 {
     "name": "OH Hostel Representative",
     "max_votes" : 1,
-    "applied_hostel" : "all",
+    "applied_hostel" : "OH",
     "help_text" : "Blank"
 },
 {
@@ -104,7 +107,7 @@ posts = [
 {
     "name": "NH Hostel Representative",
     "max_votes" : 1,
-    "applied_hostel" : "all",
+    "applied_hostel" : "NH",
     "help_text" : "Blank"
 },
 {
@@ -116,7 +119,14 @@ posts = [
 {
     "name": "WH Hostel Representative",
     "max_votes" : 1,
-    "applied_hostel" : "all",
+    "applied_hostel" : "WH",
     "help_text" : "Blank"
 },
 ]
+
+def add_posts_to_db():
+    db.create_all()
+    for post in posts:
+        db.session.add(Post(post["name"], post["max_votes"], post["applied_hostel"],
+                            post["help_text"]))
+    db.session.commit()

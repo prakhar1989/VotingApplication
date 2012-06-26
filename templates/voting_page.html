@@ -7,7 +7,7 @@
             <li class="nav-header">
                 Posts 
             </li>
-            {% for post in candidates_dict.keys() %}
+            {% for post in valid_post_list %}
             <li><a class="post_toggle_link" href="#/{{ post.id }}">{{ post.name }}</a></li>
             {% endfor %}
         </ul>
