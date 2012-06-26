@@ -34,10 +34,16 @@ class Coupon(db.Model):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
+    max_votes = db.Column(db.Integer)
+    applied_hostel = db.Column(db.String(80))
+    help_text = db.Column(db.Text)
     candidates = db.relationship('Candidate', backref='post', lazy='dynamic')
 
-    def __init__(self, name):
+    def __init__(self, name, max_votes, applied_hostel, help_text="Blank"):
         self.name = name
+        self.max_votes = max_votes
+        self.applied_hostel = applied_hostel
+        self.help_text = help_text
 
     def __repr__(self):
         return "<Post %r>" % self.name
