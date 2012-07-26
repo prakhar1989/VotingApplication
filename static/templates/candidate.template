@@ -1,4 +1,4 @@
-<div class="candidate-tile">
+<div class="candidate-tile" data-username= <%= candidate.username %> >
     <div class="candidate-image">
         <img src="<%= candidate.image %>" width="50px" height=auto />
     </div>
@@ -6,5 +6,7 @@
         <h3 class="candidate-name"><%= candidate.name %></h3>
         <h6 class="candidate-dept"><%= candidate.dept %></h6>
         <span class="label label-info"><%= candidate.hostel %></span>
+    </div>
+    <div class="checkbox"> 
     </div>
 </div>

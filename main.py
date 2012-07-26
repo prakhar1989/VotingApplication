@@ -31,7 +31,6 @@ class Coupon(db.Model):
     def invalidate(self):
         self.is_valid = False
 
-
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
@@ -150,18 +149,22 @@ def login():
                 and coupon_code == app.config['ADMIN_COUPON']:
             session['logged_in'] = True
             session['is_admin'] = True
-            flash('You have logged in', "success")
+            flash('Welcome Admin', "success")
             return redirect(url_for('admin'))
 
         elif ldap_helper.ldap_authenticate(username, password) and \
                 user_coupon and user_coupon.value == coupon_code:
 
             user_hostel = ldap_helper.ldap_fetch_detail(username, ["hostel"])
-            if user_hostel: session['hostel'] = user_hostel["hostel"]
-            session['logged_in']= True
-            session['username'] = username
-            flash('You have logged in', "success")
-            return redirect(url_for('voting_page'))
+            if user_hostel:
+                session['hostel'] = user_hostel["hostel"]
+                session['logged_in']= True
+                session['username'] = username
+                flash('You have logged in', "success")
+                return redirect(url_for('voting_page'))
+            else:
+                flash("We could not retrieve your hostel. Please try login again")
+                return render_template('login.html')
 
         else:
             flash('Invalid username/password/coupon combination', "error")
@@ -178,7 +181,6 @@ def logout():
     flash("You have successfully logged out", "success")
     return redirect(url_for('login'))
 
-
 @app.route('/admin', methods=['POST', 'GET'])
 def admin():
     if request.method == "POST":
@@ -190,7 +192,6 @@ def admin():
         else:
             posts = Post.query.all()
             return render_template("admin_interface.html", posts = posts)
-
 
 @app.route('/coupon/new', methods=['POST'])
 def generate_coupon():
@@ -236,7 +237,7 @@ def save_candidate():
         c1 = Candidate(username, full_name, hostel, candidate_post.id, dept, add_yesno)
         db.session.add(c1)
         db.session.commit()
-        return jsonify(status_msg="Added %s to the database" % username)
+        return jsonify(status_msg="Added %s" % username)
     else:
         return jsonify(status_msg="To add a blank user, enter blank in username field")
 
@@ -265,19 +266,21 @@ def fetch_post_details(post_id):
     post_json = [[], []]
     post = Post.query.get(post_id)
     post_json[0].append({
-        "post_name" : post.name,
-        "post_max_votes" : post.max_votes,
+        "post_id"             : post_id,
+        "post_name"           : post.name,
+        "post_max_votes"      : post.max_votes,
         "post_applied_hostel" : post.applied_hostel,
-        "post_help_text": post.help_text
+        "post_help_text"      : post.help_text
     })
     post_candidate_details = Candidate.query.filter_by(post_id=post_id).all()
     for c in post_candidate_details:
         post_json[1].append({
-            "name" : c.full_name,
-            "dept" : c.dept,
-            "image" : "http://student.iimcal.ac.in/userimages/%s.jpg" % c.name,
-            "hostel" : c.hostel,
-            "yes_no" : c.yes_no
+            "username" : c.name,
+            "name"     : c.full_name,
+            "dept"     : c.dept,
+            "image"    : "http://student.iimcal.ac.in/userimages/%s.jpg" % c.name,
+            "hostel"   : c.hostel,
+            "yes_no"   : c.yes_no
         })
     return Response(json.dumps(post_json), mimetype='application/json')
 

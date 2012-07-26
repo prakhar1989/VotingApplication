@@ -1,10 +1,20 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h2>Login</h2>
-    <form action="/login" method="POST" class="well form-inline">
-        <input type="text" class="input-large" name="username" placeholder="username">
-        <input type="password" class="input-large" name="password" placeholder="Password">
-        <input type="text" class="input-large" name="coupon_code" placeholder="Coupon Code">
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+    <div class="splash">
+        <h2>Login</h2>
+        <form action="/login" id="login_form" method="POST" class="form-horizontal">
+            <div class="control-group">
+                <input type="text" class="input-large" name="username" placeholder="Username">
+            </div>
+            <div class="control-group">
+                <input type="password" class="input-large" name="password" placeholder="Password">
+            </div>
+            <div class="control-group">
+                <input type="text" class="input-large" name="coupon_code" placeholder="Coupon Code">
+            </div>
+            <div class="control-group">
+                <button type="submit" class="btn btn-primary btn-large">Login and start voting</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

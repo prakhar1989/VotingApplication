@@ -73,9 +73,10 @@
     </div> <!-- /container -->
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/mustache.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/application.js')}}"></script>
     {% block custom_js %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/application.js')}}"></script>
   </body>
 </html>
 
