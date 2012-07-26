@@ -1,5 +1,7 @@
 (function($) {
 
+var votes_array = {};
+
 var fill_with_default = function(votes_array, default_string){
     //instantiates votes_array to a default value
     for(i=0; i<=20; i++){
@@ -7,12 +9,13 @@ var fill_with_default = function(votes_array, default_string){
     }
 }
 
-var add_to_votes_array =  function(votes_array, username, post_id){
-    votes_array[post_id] = username;
+fill_with_default(votes_array, "default");
+
+var add_to_votes_array = function(votes_array, username_list, post_id){
+    //something wrong here
+    votes_array[post_id] = username_list;
 };
 
-var votes_array = {};
-fill_with_default(votes_array, "default");
 
 var app = $.sammy('#main', function() {
     this.use('Template');
@@ -23,6 +26,9 @@ var app = $.sammy('#main', function() {
 
     this.get('#/:post_id', function(context){
         this.trigger('addVotesInArray');
+        //console.log("Votes Array " + votes_array);
+        //var posts_votes = votes_array[this.params['post_id'] - 1];
+        console.log(votes_array);
         context.app.swap('');
         this.load('/post/' +  this.params['post_id'])
             .then(function(candidates){
@@ -37,10 +43,13 @@ var app = $.sammy('#main', function() {
     });
     
     this.bind('addVotesInArray', function(){
-        current_post_id = $('.post_heading').data("post_id");
-        candidate_username = $('.candidate_selected').data("username");
-        add_to_votes_array(votes_array, candidate_username, current_post_id);
-        console.log(votes_array);
+       var current_post_id = $('.post_heading').data("post_id");
+       var selected_candidates = $('.candidate_selected');
+       var selected_candidate_list = [];
+       for (i = 0; i < selected_candidates.length; i++) {
+            selected_candidate_list.push($(selected_candidates[i]).data("username"));
+       }
+       add_to_votes_array(votes_array, selected_candidate_list, current_post_id);
     });
 
     $(function() {
