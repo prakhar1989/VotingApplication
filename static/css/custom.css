@@ -1,6 +1,7 @@
 /* Add CSS from http://action.io */
 body {
-    background:  #EEE url('/static/img/bg-blue.png');
+    background:  #EEE url('/static/img/denim.png');
+    background-color: #232927;
 }
 
 .splash {
@@ -90,3 +91,4 @@ section{
 .checkbox_selected {
     background: url('/static/img/arrow.png') no-repeat -11px -9px;
 }
+

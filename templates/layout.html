@@ -40,7 +40,7 @@
 
                 <li><p class="navbar-text"><i class="icon-user icon-white"></i>
                 {% if session.admin %}
-                    "Admin"
+                    <li><a href="{{ url_for('admin') }}">Admin</a></li>
                 {% else %}
                     {{ session.username }}
                 {% endif %}
