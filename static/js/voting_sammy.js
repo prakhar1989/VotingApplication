@@ -15,7 +15,7 @@ var app = $.sammy('#main', function() {
         return {};
     });
 
-    if (votes_array == {}) { fill_with_default(votes_array, "default"); }
+    if (votes_array == {}) { fill_with_default(votes_array, "blank"); }
 
     this.get('#/', function(context){
         this.redirect('#/1');
@@ -35,10 +35,17 @@ var app = $.sammy('#main', function() {
                     context.render("static/templates/candidate.template", {candidate:candidate})
                     .appendTo(context.$element())
                     .then(function(){
+                        var ht = $('.topdiv').css("height");
+                        var cur_ht = $('.sidebar').css("height");
+                        if (parseInt(cur_ht) < parseInt(ht)){
+                            $('.sidebar').css("height", (parseInt(ht)+20) + "px");
+                        }
+                    })
+                    .then(function(){
                         //Important
                         var chosen_votes = votes_array[context.params['post_id']];
                         console.log(chosen_votes);
-                        if (chosen_votes && chosen_votes.length > 0 && chosen_votes != "default") {
+                        if (chosen_votes && chosen_votes.length > 0 && chosen_votes != "blank") {
                             for (i=0; i < chosen_votes.length; i++) {
                                 var u_name = chosen_votes[i];
                                 $('#main').find("[data-username='" + u_name + "']")

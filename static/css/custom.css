@@ -37,6 +37,13 @@ footer {
     border-radius: 3px 3px 3px 3px;
 }
 
+.white_bg{
+    background: none repeat scroll 0% 0% white;
+    border: 1px solid rgb(195, 204, 208);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0), 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 3px 3px 3px 3px;
+}
+
 section{
     margin-bottom: 40px;
     margin-top: 20px;
@@ -102,8 +109,13 @@ section{
 }
 
 .sidebar {
-    padding: 20px 0px;
-    margin-top: 20px;
-    background: #eee;
+    padding: 20px 20px;
+    margin: 0px;
+    margin-right: 20px;
+    height: 100%;
+    background-color: #F2F2F2;
+    background-image: url("/static/img/shadow.png");
+    background-position: right top;
+    background-repeat: repeat-y;
 }
 

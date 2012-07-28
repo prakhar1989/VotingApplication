@@ -1,24 +1,22 @@
 {% extends "layout.html" %}
 {% block body %}
 
-    <div class="row white_tile">
+    <div class="row white_bg">
+
         <div class="sidebar span3">
-        <ul class="nav nav-list post-list">
-            <li class="nav-header">
-                Posts 
-            </li>
-            {% for post in valid_post_list %}
-            <li><a class="post_toggle_link" href="#/{{ post.id }}">{{ post.name }}</a></li>
-            {% endfor %}
-        </ul>
-        </div>
-        <div class="span4">
-            <button class="btn btn-large btn-primary" style="margin-top: 20px;">
-                Submit My Vote! &rarr;
-            </button>
+           <ul class="nav nav-list post-list">
+                <li class="nav-header">
+                    Posts 
+                </li>
+                {% for post in valid_post_list %}
+                <li><a class="post_toggle_link" href="#/{{ post.id }}">{{ post.name }}</a></li>
+                {% endfor %}
+            </ul>
         </div>
 
-        <div class="span8">
+            <button class="btn btn-large btn-primary" style="margin-top: 20px; margin-right: 40px; float: right;"> Submit My Vote! &rarr; </button>
+
+        <div class="topdiv span8">
             <h1 class="post_heading"> </h1>
             <div class="post_listing" id="main"> </div>
         </div>
