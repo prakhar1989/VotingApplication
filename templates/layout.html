@@ -46,6 +46,7 @@
                 {% endif %}
                 </p>
                 </li>
+                <li><a id="modalClick" data-toggle="modal" href="#myModal">Help</a></li>
                 <li class="divider-vertical"></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
@@ -70,10 +71,14 @@
 
     {% block body %}{% endblock %}
 
+    <footer>
+        <p>Handcrafted by Internet Solutions Group &copy; 2012</p>
+    </footer>
     </div> <!-- /container -->
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/modal.js')}}"></script>
     <script src="{{ url_for('static', filename='js/mustache.js')}}"></script>
     {% block custom_js %}{% endblock %}
     <script src="{{ url_for('static', filename='js/application.js')}}"></script>

@@ -2,7 +2,7 @@
 {% block body %}
 
     <div class="row white_tile">
-        <div class="well span3" style="padding: 8px 0; margin-top: 20px;">
+        <div class="sidebar span3">
         <ul class="nav nav-list post-list">
             <li class="nav-header">
                 Posts 
@@ -12,8 +12,8 @@
             {% endfor %}
         </ul>
         </div>
-        <div class="span3">
-            <button class="btn btn-primary" style="margin-top: 20px;">
+        <div class="span4">
+            <button class="btn btn-large btn-primary" style="margin-top: 20px;">
                 Submit My Vote! &rarr;
             </button>
         </div>
@@ -21,6 +21,26 @@
         <div class="span8">
             <h1 class="post_heading"> </h1>
             <div class="post_listing" id="main"> </div>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h3>Voting Application</h3>
+        </div>
+        <div class="modal-body">
+            <h4>Lets keep this short</h4>
+            <ol>
+                <li>Use the left sidebar to move between posts</li>
+                <li>Click on your favorite candidates to select them</li>
+                <li>Keep moving from post to post and continue voting</li>
+                <li>When you're done click on the BIG BLUE button and submit your vote</li>
+                <li>Win!</li>
+            </ol>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal" >Close</a>
         </div>
     </div>
 {% endblock %}

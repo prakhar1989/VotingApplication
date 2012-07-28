@@ -1,20 +1,11 @@
 (function($) {
 
-//This is made global only
-//for debugging purposes. Remember
-//to make this local to the context
-//votes_array = {};
-
 var fill_with_default = function(votes_array, default_string){
     //instantiates votes_array to a default value
     for(i=0; i<=20; i++){
         votes_array[i] = default_string;
     }
 }
-
-//fill_with_default(votes_array, "default");
-
-
 
 var app = $.sammy('#main', function() {
     this.use('Template');
@@ -28,6 +19,7 @@ var app = $.sammy('#main', function() {
 
     this.get('#/', function(context){
         this.redirect('#/1');
+        $('#modalClick').trigger('click');
     });
 
     this.get('#/:post_id', function(context){
@@ -46,7 +38,7 @@ var app = $.sammy('#main', function() {
                         //Important
                         var chosen_votes = votes_array[context.params['post_id']];
                         console.log(chosen_votes);
-                        if (chosen_votes.length > 0 && chosen_votes != "default") {
+                        if (chosen_votes && chosen_votes.length > 0 && chosen_votes != "default") {
                             for (i=0; i < chosen_votes.length; i++) {
                                 var u_name = chosen_votes[i];
                                 $('#main').find("[data-username='" + u_name + "']")
