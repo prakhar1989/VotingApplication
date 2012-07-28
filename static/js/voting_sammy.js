@@ -30,6 +30,7 @@ var app = $.sammy('#main', function() {
             .then(function(candidates){
                 //Use post data generated to add help_text for each post generated
                 $('.post_heading').text(candidates[0][0]["post_name"]);
+                $('.post_help_text').text(candidates[0][0]["post_help_text"]);
                 $('.post_heading').data("post_id", candidates[0][0]["post_id"]);
                 $.each(candidates[1], function(i, candidate){
                     context.render("static/templates/candidate.template", {candidate:candidate})
