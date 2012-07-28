@@ -66,6 +66,11 @@ var app = $.sammy('#main', function() {
        }
     });
 
+    $('#logoutbtn').click(function(){
+        $(context).session('votes_array', {});
+        return true;
+    });
+
     $(function() {
         app.run('#/');
     });
