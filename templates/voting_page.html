@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
 
-    <div class="row white_bg">
-
+    <div class="white_bg">
+    <div class="row" style="margin-left: 0px;">
         <div class="sidebar span3">
            <ul class="nav nav-list post-list">
                 <li class="nav-header">
@@ -14,13 +14,14 @@
             </ul>
         </div>
 
-            <button class="btn btn-large btn-primary" style="margin-top: 20px; margin-right: 40px; float: right;"> Submit My Vote! &rarr; </button>
+            <a class="btn btn-large btn-primary" href="/#/submit" style="margin-top: 20px; margin-right: 40px; float: right;"> Submit My Vote! &rarr; </a>
 
         <div class="topdiv span8">
             <h1 class="post_heading"> </h1>
             <h6 class="post_help_text">hi there</h6>
             <div class="post_listing" id="main"> </div>
         </div>
+    </div>
     </div>
 
     <div id="myModal" class="modal hide fade">

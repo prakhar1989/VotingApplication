@@ -17,9 +17,21 @@ var app = $.sammy('#main', function() {
 
     if (votes_array == {}) { fill_with_default(votes_array, "blank"); }
 
+
+    $('#logoutbtn').click(function(){
+        this.session('votes_array', {});
+        alert(votes_array);
+    });
+
+
     this.get('#/', function(context){
         this.redirect('#/1');
         $('#modalClick').trigger('click');
+    });
+
+    this.get("#/submit", function(context){
+        console.log("final votes count");
+        console.log(votes_array);
     });
 
     this.get('#/:post_id', function(context){
@@ -74,10 +86,6 @@ var app = $.sammy('#main', function() {
        }
     });
 
-    $('#logoutbtn').click(function(){
-        $(context).session('votes_array', {});
-        return true;
-    });
 
     $(function() {
         app.run('#/');

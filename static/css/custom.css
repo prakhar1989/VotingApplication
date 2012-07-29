@@ -21,6 +21,9 @@ footer {
     border-radius: 3px 3px 3px 3px;
 }
 
+#main {
+    margin-bottom: 20px;
+}
 .splash h2{
     margin: 20px 0px;
 }

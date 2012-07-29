@@ -1,0 +1,5 @@
+- session not cleared in logout
+- rows are flowing beyond the gutter
+- list_candidates is useless
+- code fucks up when coupon already exists
+

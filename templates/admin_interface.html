@@ -1,85 +1,89 @@
 {% extends "layout.html" %}
 {% block body %}
 <section>
-<div class='row white_tile'>
+<div class='white_tile'>
     <div class="page-header">
         <h2>Generate Coupons <small> to let new users vote</small></h2>
     </div>
-    <div class="span8">
-        <form id="coupon_form" method="POST" action="/coupon/new" class="well form-inline">
-            <input type="text" class="input" name="username" placeholder="new username">
-            <input type="password" class="input" name="password" placeholder="Admin Password">
-            <input type="submit" class="btn btn-inverse" value="Generate Coupon"></button>
-        </form>
-    </div>
-    <div class="span3">
-        <div class="coupon_gen">
-            <h4>Coupon generated</h4>
-            <h2 id="coupon_value"></h2>
-            <span class="label label-important" id="show_message"></span>
+    <div class="row">
+        <div class="span8">
+            <form id="coupon_form" method="POST" action="/coupon/new" class="well form-inline">
+                <input type="text" class="input" name="username" placeholder="new username">
+                <input type="password" class="input" name="password" placeholder="Admin Password">
+                <input type="submit" class="btn btn-inverse" value="Generate Coupon"></button>
+            </form>
+        </div>
+        <div class="span3">
+            <div class="coupon_gen">
+                <h4>Coupon generated</h4>
+                <h2 id="coupon_value"></h2>
+                <span class="label label-important" id="show_message"></span>
+            </div>
         </div>
     </div>
 </div>
 </section>
 <section>
-<div class="row white_tile">
+<div class="white_tile">
     <div class="page-header">
         <h2>Add Candidates <small>contesting for elections into the DB</small></h2>
     </div>
-    <div class="span6">
-        <form class="form-horizontal" id="add_candidate_form" method="POST" action="/candidate/new">
-            <fieldset>
-                <div class="control-group">
-                    <label class="control-label">Candidate's Username</label>
-                    <div class="controls">
-                        <input type="text" class="input-xlarge" id="user_name" name="username" placeholder="E.g. prakhars2013">
-                        <p class="help-block">Use "Abstain" or "Blank" to add these candidates</p>
+    <div class="row">
+        <div class="span6">
+            <form class="form-horizontal" id="add_candidate_form" method="POST" action="/candidate/new">
+                <fieldset>
+                    <div class="control-group">
+                        <label class="control-label">Candidate's Username</label>
+                        <div class="controls">
+                            <input type="text" class="input-xlarge" id="user_name" name="username" placeholder="E.g. prakhars2013">
+                            <p class="help-block">Use "Abstain" or "Blank" to add these candidates</p>
+                        </div>
                     </div>
-                </div>
-                {# 
-                NOTE: Yes or no vote option - Not really required. Add this if
-                the requirement changes
-                <div class="control-group">
-                    <label class="control-label" for="optionsCheckbox">Type of Vote</label>
-                    <div class="controls">
-                        <label class="checkbox">
-                            <input type="checkbox" id="optionsCheckbox" name="binary_vote">
-                            Check do add Yes/No vote for this candidate
-                        </label>
+                    {# 
+                    NOTE: Yes or no vote option - Not really required. Add this if
+                    the requirement changes
+                    <div class="control-group">
+                        <label class="control-label" for="optionsCheckbox">Type of Vote</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="optionsCheckbox" name="binary_vote">
+                                Check do add Yes/No vote for this candidate
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <--!>
-                #}
-                <div class="control-group">
-                    <label class="control-label" for="select01">Select Post</label>
-                    <div class="controls">
-                        <select id="select01" name="post_select">
-                            {% for post in posts %}
-                            <option>{{ post.name }}</option>
-                            {% endfor %}
-                        </select>
+                    <--!>
+                    #}
+                    <div class="control-group">
+                        <label class="control-label" for="select01">Select Post</label>
+                        <div class="controls">
+                            <select id="select01" name="post_select">
+                                {% for post in posts %}
+                                <option>{{ post.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="form-actions">
-                    <input type="submit" class="btn btn-primary" value="Add Candidate"></input>
-                    <input type="reset" class="btn" id="reset_btn" value="Reset"></input>
-                    <!-- TODO: Move this somewhere else -->
-                    <small class="add_status">
-                    </small>
-                </div>
-            </fieldset>
-        </form>
-    </div>
-    <div class="span5" id="candidate_details">
-        <!-- This looks totally fucked up -->
-        {% raw %}
-        <ul class="thumbnails">
-            <li>
-                <div class="thumbnail user_details">
-                </div>
-            </li>
-        </ul>
-        {% endraw %}
+                    <div class="form-actions">
+                        <input type="submit" class="btn btn-primary" value="Add Candidate"></input>
+                        <input type="reset" class="btn" id="reset_btn" value="Reset"></input>
+                        <!-- TODO: Move this somewhere else -->
+                        <small class="add_status">
+                        </small>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="span5" id="candidate_details">
+            <!-- This looks totally fucked up -->
+            {% raw %}
+            <ul class="thumbnails">
+                <li>
+                    <div class="thumbnail user_details">
+                    </div>
+                </li>
+            </ul>
+            {% endraw %}
+        </div>
     </div>
 </div>
 </section>
