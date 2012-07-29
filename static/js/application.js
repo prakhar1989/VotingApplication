@@ -1,9 +1,7 @@
 $(function() {
     //hide the show_message label by default
     $('.coupon_gen').hide();
-    //$('#candidate_details').hide();
 
-    var my_custom_message = "Hello, how are you";
     $('#coupon_form').submit(function(){
         $.ajax({
             url: $SCRIPT_ROOT+'/coupon/new',
@@ -19,7 +17,7 @@ $(function() {
     });
 
     $('#user_name').focusout(function(){
-        var username = $("#user_name").val();
+        var username = $("#user_name").val().toLowerCase();
         var details_url = $SCRIPT_ROOT + '/candidate/' + username;
         var details_template = "\
             <img src={{image_url}} style='margin: 0px auto;'> \
@@ -31,12 +29,17 @@ $(function() {
                 </dl> \
             </div> \
         "; 
-        $.get(details_url, function(data){
-            generated_html = Mustache.to_html(details_template, data);
-            $('.user_details').show();
-            $('.user_details').html(generated_html);
-        });
+        if (username != "abstain"){
+            //Fetch candidate details only if username 
+            //is not "abstain"
+            $.get(details_url, function(data){
+                generated_html = Mustache.to_html(details_template, data);
+                $('.user_details').show();
+                $('.user_details').html(generated_html);
+            });
+        }
     });
+
 
     $('#add_candidate_form').submit(function(){
         $.ajax({

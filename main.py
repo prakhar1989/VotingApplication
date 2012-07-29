@@ -226,14 +226,20 @@ def save_candidate():
                                                 ["hostel", "displayName", "departmentNumber"])
     if username:
         candidate_post = Post.query.filter_by(name=post_select).first()
-        if user_details:
-            hostel = user_details["hostel"]
-            full_name = user_details["displayName"]
-            dept = user_details["departmentNumber"]
-        else:  #its Blank or Abstain
-            hostel = "All"
-            full_name = username
-            dept = "None" #TODO: Not to sure if this is how it should be
+        if username != 'abstain':
+            if user_details:
+                hostel = user_details["hostel"]
+                full_name = user_details["displayName"]
+                dept = user_details["departmentNumber"]
+            else:  #its Blank or Abstain
+                hostel = "All"
+                full_name = username
+                dept = "None" #TODO: Not to sure if this is how it should be
+        else:
+            full_name = "Abstain"
+            hostel = "NA"
+            dept = "NA"
+
         c1 = Candidate(username, full_name, hostel, candidate_post.id, dept, add_yesno)
         db.session.add(c1)
         db.session.commit()
@@ -247,6 +253,11 @@ def fetch_candidate_details(username):
     attr_list = ["departmentNumber", "displayName", "hostel"]
     candidate_details = ldap_helper.ldap_fetch_detail(username, attr_list)
     img_url = "http://student.iimcal.ac.in/userimages/%s.jpg" % username
+    if username == "abstain":
+        img_url = "http://upload.wikimedia.org/wikipedia/en/thumb/7/78/Trollface.svg/200px-Trollface.svg.png"
+        return jsonify(image_url=img_url, dept="NA",
+                                    name="Abstain",
+                                    hostel="NA")
     if candidate_details:
         return jsonify(image_url=img_url, dept=candidate_details["departmentNumber"],
                                     name=candidate_details["displayName"],
@@ -255,10 +266,10 @@ def fetch_candidate_details(username):
         return jsonify(name="No candidate found!")
 
 
-@app.route('/candidates')
-def return_candidates():
-    candidates = Candidate.query.all()
-    return render_template('list_candidates', candidates = candidates)
+#@app.route('/candidates')
+#def return_candidates():
+#    candidates = Candidate.query.all()
+#    return render_template('list_candidates', candidates = candidates)
 
 
 @app.route('/post/<int:post_id>')
@@ -274,14 +285,24 @@ def fetch_post_details(post_id):
     })
     post_candidate_details = Candidate.query.filter_by(post_id=post_id).all()
     for c in post_candidate_details:
-        post_json[1].append({
-            "username" : c.name,
-            "name"     : c.full_name,
-            "dept"     : c.dept,
-            "image"    : "http://student.iimcal.ac.in/userimages/%s.jpg" % c.name,
-            "hostel"   : c.hostel,
-            "yes_no"   : c.yes_no
-        })
+        if c.name == "abstain":
+            post_json[1].append({
+                "username" : c.name,
+                "name"     : c.full_name,
+                "dept"     : c.dept,
+                "image"    : "http://upload.wikimedia.org/wikipedia/en/thumb/7/78/Trollface.svg/200px-Trollface.svg.png",
+                "hostel"   : c.hostel,
+                "yes_no"   : c.yes_no
+            })
+        else:
+            post_json[1].append({
+                "username" : c.name,
+                "name"     : c.full_name,
+                "dept"     : c.dept,
+                "image"    : "http://student.iimcal.ac.in/userimages/%s.jpg" % c.name,
+                "hostel"   : c.hostel,
+                "yes_no"   : c.yes_no
+            })
     return Response(json.dumps(post_json), mimetype='application/json')
 
 if __name__ == "__main__":
