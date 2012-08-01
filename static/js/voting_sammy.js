@@ -26,7 +26,9 @@ var app = $.sammy('#main', function() {
 
     this.get('#/', function(context){
         this.redirect('#/1');
+        $('#status').hide();
         $('#modalClick').trigger('click');
+
     });
 
     this.get("#/submit", function(context){
@@ -38,10 +40,10 @@ var app = $.sammy('#main', function() {
             dataType: 'json',
             data: JSON.stringify(votes_array),
             success: function(data){
-                $('#main').hide();
+                $('.white_bg').hide();
                 $('.sidebar').hide();
-                $('.post_heading').text("Thanks for voting!");
-                console.log(data);
+                $('#status').show();
+                $('#message').text(data['status']);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
                 alert(errorThrown);
