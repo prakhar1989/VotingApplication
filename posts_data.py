@@ -12,49 +12,49 @@ posts = [
     "name": "STEP Representative",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "President",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "Treasurer",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "Library Representative",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "Alumni Secretary",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "Cultural Secretary",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "Hostel Affairs Secretary",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "Sports Secretary",
     "max_votes" : 1,
     "applied_hostel" : "all",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "External Relations Secretary",
@@ -78,49 +78,49 @@ posts = [
     "name": "LVH Mess Representative",
     "max_votes" : 1,
     "applied_hostel" : "LVH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "LVH Hostel Representative",
     "max_votes" : 1,
     "applied_hostel" : "LVH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "OH Mess Representative",
     "max_votes" : 1,
     "applied_hostel" : "OH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "OH Hostel Representative",
     "max_votes" : 1,
     "applied_hostel" : "OH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "NH Mess Representative",
     "max_votes" : 1,
     "applied_hostel" : "NH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "NH Hostel Representative",
     "max_votes" : 1,
     "applied_hostel" : "NH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "WH Mess Representative",
     "max_votes" : 1,
     "applied_hostel" : "WH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 {
     "name": "WH Hostel Representative",
     "max_votes" : 1,
     "applied_hostel" : "WH",
-    "help_text" : "Blank"
+    "help_text" : "lorem ipsum dolor set amit"
 },
 ]
 

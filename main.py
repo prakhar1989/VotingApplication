@@ -56,7 +56,6 @@ class Candidate(db.Model):
     hostel = db.Column(db.String(80))
     dept = db.Column(db.String(80)) #Department Number
     yes_no = db.Column(db.Boolean)
-    #votes = db.relationship('Vote', backref='vote', lazy="dynamic")
 
     def __init__(self, name, full_name, hostel, post_id, dept, yes_no):
         self.name = name
@@ -69,24 +68,21 @@ class Candidate(db.Model):
     def __repr__(self):
         return "<Candidate: %r, Post: %r>" % (self.name, self.post.name)
 
-#class Vote(db.Model):
-    ##under substantial construction
-    ##Add users table, and make correct relationships
-    #id = db.Column(db.Integer, primary_key=True)
-    #user_id = db.Column(db.String(80))
-    #candidate_id = db.Column(db.Integer, db.ForeignKey('candidate.id'))
-    #weightage = db.Column(db.Integer)
-    #post_name = db.Column(db.String(80)) #change this to a relationship
+class Vote(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    voter_name = db.Column(db.String(80))
+    candidate_name = db.Column(db.String(80))
+    post_id = db.Column(db.Integer)
 
-    #def __init__(self, user_id, candidate_id, post_name, weightage=1):
-        #self.user_id = user_id
-        #self.candidate_id = candidate_id
-        #self.weightage = weightage
-        #self.post_name = post_name
+    def __init__(self, voter_name, candidate_name, post_id):
+       self.voter_name = voter_name
+       self.candidate_name = candidate_name
+       self.post_id = post_id
 
-    #def __repr__(self):
-        #return "<Vote | user_id: %r -> candidate_id: %r for %r" % (self.user_id,
-                                    #self.candidate_id, self.post_name)
+    def __repr__(self):
+       return "<Vote | voter_name: %r -> candidate_name: %r for %r" % (self.voter_name,
+                                    self.candidate_name, self.post_id)
+
 
 ### CONTROLLER ###
 
@@ -304,6 +300,18 @@ def fetch_post_details(post_id):
                 "yes_no"   : c.yes_no
             })
     return Response(json.dumps(post_json), mimetype='application/json')
+
+
+@app.route('/submit', methods = ["POST"])
+def submit_votes():
+    if request.method == "POST":
+        votes = json.loads(request.form.items()[0][0])
+        # votes is now a dict with (k,v) => (post_id, [votes_list])
+        print votes["1"]
+        return jsonify(text="hello")
+
+
+
 
 if __name__ == "__main__":
     app.run()

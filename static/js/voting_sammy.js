@@ -30,8 +30,23 @@ var app = $.sammy('#main', function() {
     });
 
     this.get("#/submit", function(context){
-        console.log("final votes count");
-        console.log(votes_array);
+        console.log(JSON.stringify(votes_array));
+        $.ajax({
+            type: 'POST',
+            url: '/submit',
+            cache: false,
+            dataType: 'json',
+            data: JSON.stringify(votes_array),
+            success: function(data){
+                $('#main').hide();
+                $('.sidebar').hide();
+                $('.post_heading').text("Thanks for voting!");
+                console.log(data);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                alert(errorThrown);
+            }
+        });
     });
 
     this.get('#/:post_id', function(context){
@@ -57,7 +72,6 @@ var app = $.sammy('#main', function() {
                     .then(function(){
                         //Important
                         var chosen_votes = votes_array[context.params['post_id']];
-                        console.log(chosen_votes);
                         if (chosen_votes && chosen_votes.length > 0 && chosen_votes != "blank") {
                             for (i=0; i < chosen_votes.length; i++) {
                                 var u_name = chosen_votes[i];
