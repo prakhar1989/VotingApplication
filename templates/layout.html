@@ -39,15 +39,19 @@
             <ul class="nav pull-right">
 
                 <li><p class="navbar-text"><i class="icon-user icon-white"></i>
-                {% if session.admin %}
-                    <li><a href="{{ url_for('admin') }}">Admin</a></li>
+                {% if session.is_admin %}
+                    {{ "Admin" }}
                 {% else %}
                     {{ session.username }}
                 {% endif %}
                 </p>
                 </li>
+                <li class="divider-vertical"></li>
                 <li><a id="modalClick" data-toggle="modal" href="#myModal">Help</a></li>
                 <li class="divider-vertical"></li>
+                {% if session.is_admin %}
+                    <li><a href="{{ url_for('admin') }}">Admin Section</a></li>
+                {% endif %}
                 <li><a id="logoutbtn" href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
             </ul>

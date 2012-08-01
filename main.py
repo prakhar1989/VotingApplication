@@ -73,11 +73,13 @@ class Vote(db.Model):
     voter_name = db.Column(db.String(80))
     candidate_name = db.Column(db.String(80))
     post_id = db.Column(db.Integer)
+    post_name = db.Column(db.String(80))
 
-    def __init__(self, voter_name, candidate_name, post_id):
+    def __init__(self, voter_name, candidate_name, post_id, post_name):
        self.voter_name = voter_name
        self.candidate_name = candidate_name
        self.post_id = post_id
+       self.post_name = post_name
 
     def __repr__(self):
        return "<Vote | voter_name: %r -> candidate_name: %r for %r" % (self.voter_name,
@@ -145,6 +147,7 @@ def login():
                 and coupon_code == app.config['ADMIN_COUPON']:
             session['logged_in'] = True
             session['is_admin'] = True
+            session['username'] = "admin"
             flash('Welcome Admin', "success")
             return redirect(url_for('admin'))
 
@@ -305,13 +308,19 @@ def fetch_post_details(post_id):
 @app.route('/submit', methods = ["POST"])
 def submit_votes():
     if request.method == "POST":
+        posts = {}
+        for p in Post.query.all():
+            posts[p.id] = p.name
         votes = json.loads(request.form.items()[0][0])
         # votes is now a dict with (k,v) => (post_id, [votes_list])
-        print votes["1"]
-        return jsonify(text="hello")
-
-
-
+        current_user = session["username"]
+        print votes
+        for i in votes:
+            candidates = votes[i]
+            for c in candidates:
+                db.session.add(Vote(current_user, c, int(i), posts[int(i)]))
+        db.session.commit()
+        return jsonify(status="Votes successfully added")
 
 if __name__ == "__main__":
     app.run()

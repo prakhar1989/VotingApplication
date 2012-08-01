@@ -19,7 +19,7 @@ var app = $.sammy('#main', function() {
 
 
     $('#logoutbtn').click(function(){
-        this.session('votes_array', {});
+        $(context).session('votes_array', {});
         alert(votes_array);
     });
 
