@@ -125,3 +125,7 @@ section{
 .nav-list > li > a, .nav-list .nav-header {
     margin-top: 8px;
 }
+
+.icon-ok {
+    float: right;
+}

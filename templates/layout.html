@@ -52,7 +52,7 @@
                 {% if session.is_admin %}
                     <li><a href="{{ url_for('admin') }}">Admin Section</a></li>
                 {% endif %}
-                <li><a id="logoutbtn" href="{{ url_for('logout') }}">Logout</a></li>
+                <li class="logout"><a id="logoutBtn" href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}
             </ul>
           </div><!--/.nav-collapse -->

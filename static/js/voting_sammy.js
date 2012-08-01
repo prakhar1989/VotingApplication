@@ -17,18 +17,11 @@ var app = $.sammy('#main', function() {
 
     if (votes_array == {}) { fill_with_default(votes_array, "blank"); }
 
-
-    $('#logoutbtn').click(function(){
-        $(context).session('votes_array', {});
-        alert(votes_array);
-    });
-
-
     this.get('#/', function(context){
         this.redirect('#/1');
+        $(".icon-ok").hide();
         $('#status').hide();
         $('#modalClick').trigger('click');
-
     });
 
     this.get("#/submit", function(context){
@@ -49,6 +42,15 @@ var app = $.sammy('#main', function() {
                 alert(errorThrown);
             }
         });
+
+        votes_array = {};
+        this.session('votes_array', {});
+        console.log(votes_array);
+    });
+
+    $('.post_toggle_link').click(function(){
+        //issues with this
+        $(this).parent().find('i').show();
     });
 
     this.get('#/:post_id', function(context){
