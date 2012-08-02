@@ -2,7 +2,6 @@ $(function() {
     //hide the show_message label by default
     $('.coupon_gen').hide();
 
-
     $('#coupon_form').submit(function(){
         $.ajax({
             url: $SCRIPT_ROOT+'/coupon/new',
