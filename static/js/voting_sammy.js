@@ -19,12 +19,17 @@ var app = $.sammy('#main', function() {
 
     this.get('#/', function(context){
         this.redirect('#/1');
-        $(".icon-ok").hide();
         $('#status').hide();
         $('#modalClick').trigger('click');
     });
 
     this.get("#/submit", function(context){
+        var max_votes_for_post = $('.post_heading').data('maxCount');
+        var current_count = $('.candidate_selected').length;
+        if (current_count > max_votes_for_post) {
+            alert("Please select valid number of candidates before proceeding");
+            return false;
+        }
         console.log(JSON.stringify(votes_array));
         $.ajax({
             type: 'POST',
@@ -48,11 +53,6 @@ var app = $.sammy('#main', function() {
         console.log(votes_array);
     });
 
-    $('.post_toggle_link').click(function(){
-        //issues with this
-        $(this).parent().find('i').show();
-    });
-
     this.get('#/:post_id', function(context){
         this.trigger('addVotesInArray');
         context.app.swap('');
@@ -63,18 +63,19 @@ var app = $.sammy('#main', function() {
                 $('.post_heading').text(candidates[0][0]["post_name"]);
                 $('.post_help_text').text(candidates[0][0]["post_help_text"]);
                 $('.post_heading').data("post_id", candidates[0][0]["post_id"]);
+                $('.post_heading').data("maxCount", candidates[0][0]["post_max_votes"]);
                 $.each(candidates[1], function(i, candidate){
-                    context.render("static/templates/candidate.template", {candidate:candidate})
+                    context.render("static/templates/candidate.template", 
+                                    {candidate:candidate})
                     .appendTo(context.$element())
                     .then(function(){
                         var ht = $('.topdiv').css("height");
                         var cur_ht = $('.sidebar').css("height");
                         if (parseInt(cur_ht) < parseInt(ht)){
-                            $('.sidebar').css("height", (parseInt(ht)+20) + "px");
-                        }
-                    })
+                            $('.sidebar')
+                            .css("height", (parseInt(ht)+20) + "px");
+                        }})
                     .then(function(){
-                        //Important
                         var chosen_votes = votes_array[context.params['post_id']];
                         if (chosen_votes && chosen_votes.length > 0 && chosen_votes != "blank") {
                             for (i=0; i < chosen_votes.length; i++) {

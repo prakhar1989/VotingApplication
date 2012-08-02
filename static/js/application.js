@@ -2,6 +2,7 @@ $(function() {
     //hide the show_message label by default
     $('.coupon_gen').hide();
 
+
     $('#coupon_form').submit(function(){
         $.ajax({
             url: $SCRIPT_ROOT+'/coupon/new',
@@ -56,12 +57,27 @@ $(function() {
     });
 
     $('.post_toggle_link').click(function(){
-        $(this).parent().siblings().removeClass('active');
-        $(this).parent().toggleClass('active');
+        var max_votes_for_post = $('.post_heading').data('maxCount');
+        var current_count = $('.candidate_selected').length;
+        if (current_count > max_votes_for_post) {
+            alert("Please select the valid number of candidates before proceeding");
+            return false;
+        } else {
+            $(this).parent().siblings().removeClass('active');
+            $(this).parent().toggleClass('active');
+        }
     });
 
-    $('#main').delegate(".candidate-tile", "click", function(){
+    $('#main').delegate(".candidate-tile", "click", function(e){
         $(this).toggleClass("candidate_selected");
         $(this).find('.checkbox').toggleClass('checkbox_selected');
+        var max_votes_for_post = $('.post_heading').data('maxCount');
+        var current_count = $('.candidate_selected').length;
+        if (current_count > max_votes_for_post) {
+            $('#error_notif').html("<strong>Error</strong> Please select at max " + max_votes_for_post + " candidate(s) for this post");
+            $('#error_notif').slideDown();
+        } else {
+            $('#error_notif').slideUp();
+        }
     });
 });

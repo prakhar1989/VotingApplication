@@ -1,0 +1,4 @@
+- total number of valid votes for each candidate (along with voter name)
+- If there are any errors ( invalid votes / duplication )
+- log each vote (with timestamp)
+

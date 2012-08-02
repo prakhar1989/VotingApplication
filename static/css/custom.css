@@ -126,6 +126,9 @@ section{
     margin-top: 8px;
 }
 
-.icon-ok {
-    float: right;
+#error_notif {
+    float: left;
+    display: none;
+    margin-top: 20px;
+    margin-left: 20px;
 }
