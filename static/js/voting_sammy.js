@@ -73,7 +73,7 @@ var app = $.sammy('#main', function() {
                         var cur_ht = $('.sidebar').css("height");
                         if (parseInt(cur_ht) < parseInt(ht)){
                             $('.sidebar')
-                            .css("height", (parseInt(ht)+20) + "px");
+                            .css("height", (parseInt(ht)) + "px");
                         }})
                     .then(function(){
                         var chosen_votes = votes_array[context.params['post_id']];
