@@ -24,6 +24,27 @@
 </div>
 </section>
 <section>
+<div class='white_tile'>
+    <div class="page-header">
+        <h2>Delete Coupons <small> to reset? </small></h2>
+    </div>
+    <div class="row">
+        <div class="span8">
+            <form id="delete_coupon" method="POST" action="/coupon/delete" class="well form-inline">
+                <input type="text" class="input" name="username" placeholder="username">
+                <input type="password" class="input" name="password" placeholder="Admin Password">
+                <input type="submit" class="btn btn-inverse" value="Generate Coupon"></button>
+            </form>
+        </div>
+        <div class="span3">
+            <div class="delete_gen">
+                <h2 id="delete_message"></h2>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<section>
 <div class="white_tile">
     <div class="page-header">
         <h2>Add Candidates <small>contesting for elections into the DB</small></h2>

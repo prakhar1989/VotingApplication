@@ -89,7 +89,6 @@ class Vote(db.Model):
 
 
 ### CONTROLLER ###
-
 def get_candidate_dict():
     candidates_dict = {}
     posts = Post.query.all()
@@ -213,6 +212,22 @@ def generate_coupon():
             return jsonify(coupon=value, msg="Success")
     else:
         return jsonify(coupon=value, msg="Incorrect Admin password")
+
+
+
+@app.route('/coupon/delete', methods=["POST"])
+def delete_coupon():
+    username = request.form['username']
+    password = request.form['password']
+    if password == app.config['PASSWORD']:
+        c = Coupon.query.filter_by(username = username).first()
+        print c.value
+        db.session.delete(c)
+        db.session.commit()
+        return jsonify(msg="Done!")
+    else:
+        return jsonify(msg="Incorrect Admin Password")
+
 
 
 @app.route('/candidate/new', methods=['POST'])

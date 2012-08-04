@@ -20,6 +20,19 @@ $(function() {
         return false;
     });
 
+    $('#delete_coupon').submit(function(){
+        $.ajax({
+            url: $SCRIPT_ROOT+'/coupon/delete',
+            type: "POST",
+            data: $(this).serialize(),
+            success: function(data) {
+                $('#delete_message').text(data.msg);
+                $('.delete_gen').show();
+            }
+        });
+        return false;
+    });
+
     $('#user_name').focusout(function(){
         var username = $("#user_name").val().toLowerCase();
         var details_url = $SCRIPT_ROOT + '/candidate/' + username;
