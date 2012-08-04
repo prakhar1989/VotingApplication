@@ -2,6 +2,10 @@ $(function() {
     //hide the show_message label by default
     $('.coupon_gen').hide();
 
+    $('#logoutBtn').click(function(e){
+        window.location.href = this.href;
+    });
+
     $('#coupon_form').submit(function(){
         $.ajax({
             url: $SCRIPT_ROOT+'/coupon/new',

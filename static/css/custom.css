@@ -53,7 +53,7 @@ section{
 }
 
 .post_heading{
-    margin-top: 40px;
+    margin-top: 20px;
 }
 
 .user_details {
@@ -130,7 +130,7 @@ section{
     float: left;
     display: none;
     margin-top: 20px;
-    margin-left: 20px;
+    margin-left: 130px;
 }
 
 #status {
@@ -143,4 +143,8 @@ section{
     background: #e6e6e6;
     border-radius: 3px;
     border: 1px solid #ddd;
+}
+
+.post_listing {
+    margin-right: 20px;
 }

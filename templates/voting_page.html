@@ -13,10 +13,10 @@
                     <a class="post_toggle_link" href="#/{{ post.id }}">{{ post.name }}</a>
                 </li>
                 {% endfor %}
-                <hr style="border: 1px solid #e2e2e2;">
+                <hr style="border-top: 1px solid #e2e2e2;">
             </ul>
             <div class="submit_btn">
-                <a class="btn btn-large btn-primary" href="/#/submit"> Submit My Vote! &rarr; </a> 
+                <a data-toggle="modal" class="btn btn-large btn-primary" href="#submitModal"> Submit My Vote! &rarr; </a> 
             </div>
         </div>
 
@@ -34,12 +34,13 @@
         <h3>Thank you for casting your vote</h3>
         <p><span class="label label-info">Status</span> <span id="message"></span></p>
         <p>Please <a href="/logout">click here to logout</a></p>
+        <p>You'll be automatically logged out in 3 secs</p>
     </div>
 
     <div id="myModal" class="modal hide fade">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h3>Voting Application</h3>
+            <h3>Help | Voting Application</h3>
         </div>
         <div class="modal-body">
             <h4>Lets keep this short</h4>
@@ -53,6 +54,24 @@
         </div>
         <div class="modal-footer">
             <a href="#" class="btn" data-dismiss="modal" >Close</a>
+        </div>
+    </div>
+
+    <div id="submitModal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h3>Submit Vote?</h3>
+        </div>
+        <div class="modal-body">
+            <strong>Are you sure you've selected all your favorite candidates across all the
+            posts? </strong>
+            <p>Your votes will be considered final after this step. If you're unsure and
+            want to revisit your votes click on the "grey" button. If you're confident about
+            your choice please click on the "Yup, I'm done" button </p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn close_btn" data-dismiss="modal" >Not Sure</a>
+            <a href="/#/submit" class="btn btn-primary">Yup, I'm Done</a>
         </div>
     </div>
 {% endblock %}

@@ -24,6 +24,7 @@ var app = $.sammy('#main', function() {
     });
 
     this.get("#/submit", function(context){
+        this.redirect('#/1');
         var max_votes_for_post = $('.post_heading').data('maxCount');
         var current_count = $('.candidate_selected').length;
         if (current_count > max_votes_for_post) {
@@ -40,17 +41,18 @@ var app = $.sammy('#main', function() {
             success: function(data){
                 $('.white_bg').hide();
                 $('.sidebar').hide();
+                $('.navbar').hide();
+                $('.close_btn').trigger('click');
                 $('#status').show();
                 $('#message').text(data['status']);
+                setTimeout(function(){
+                    $('#logoutBtn').trigger('click');
+                }(),15000);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
                 alert(errorThrown);
             }
         });
-
-        votes_array = {};
-        this.session('votes_array', {});
-        console.log(votes_array);
     });
 
     this.get('#/:post_id', function(context){
