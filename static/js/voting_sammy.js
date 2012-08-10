@@ -25,13 +25,15 @@ var app = $.sammy('#main', function() {
     });
 
     this.get("#/submit", function(context){
-        this.redirect('#/1');
+        //checks for valid votes
         var max_votes_for_post = $('.post_heading').data('maxCount');
         var current_count = $('.candidate_selected').length;
         if (current_count > max_votes_for_post) {
             alert("Please select valid number of candidates before proceeding");
             return false;
         }
+        //Add votes in the array
+        this.trigger('addVotesInArray');
         console.log(JSON.stringify(votes_array));
         $.ajax({
             type: 'POST',
@@ -46,9 +48,6 @@ var app = $.sammy('#main', function() {
                 $('.close_btn').trigger('click');
                 $('#status').show();
                 $('#message').text(data['status']);
-                setTimeout(function(){
-                    $('#logoutBtn').trigger('click');
-                }(),15000);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
                 alert(errorThrown);
