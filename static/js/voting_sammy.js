@@ -21,6 +21,7 @@ var app = $.sammy('#main', function() {
         this.redirect('#/1');
         $('#status').hide();
         $('#modalClick').trigger('click');
+        $('.post-list li:nth-child(2)').addClass("active");
     });
 
     this.get("#/submit", function(context){

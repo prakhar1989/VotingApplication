@@ -5,13 +5,9 @@
     <div class="row" style="margin-left: 0px;">
         <div class="sidebar span3">
            <ul class="nav nav-list post-list">
-                <li class="nav-header">
-                    Posts 
-                </li>
+                <li class="nav-header"> Posts </li>
                 {% for post in valid_post_list %}
-                <li>
-                    <a class="post_toggle_link" href="#/{{ post.id }}">{{ post.name }}</a>
-                </li>
+                    <li><a class="post_toggle_link" href="#/{{ post.id }}">{{ post.name }}</a> </li>
                 {% endfor %}
                 <hr style="border-top: 1px solid #e2e2e2;">
             </ul>
