@@ -7,7 +7,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql://root:prakhar@localhost/voting_app'
 
 class DevelopmentConfig(Config):
-    DEBUG = True
+    DEBUG = False
     USERNAME = 'admin'
     PASSWORD = 'admin'
     ADMIN_COUPON = 'admin'

@@ -8,7 +8,7 @@ __date__ = "$Date: 2012/06/18"
 __license__ = "Python"
 
 import ldap, sys
-base_dn = "ou=2013,ou=Student,ou=Person,dc=iimcal,dc=ac,dc=in"
+base_dn = "ou=Student,ou=Person,dc=iimcal,dc=ac,dc=in"
 searchScope = ldap.SCOPE_SUBTREE
 
 def connect_ldap():
