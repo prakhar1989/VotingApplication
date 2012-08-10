@@ -1,14 +1,17 @@
 (function($) {
 
+/*
 var fill_with_default = function(votes_array, default_string){
     //instantiates votes_array to a default value
     for(i=0; i<=20; i++){
         votes_array[i] = default_string;
     }
 }
+*/
 
 var app = $.sammy('#main', function() {
     this.use('Template');
+    /*
     this.use('Session');
 
     var votes_array = this.session('votes_array', function(){
@@ -16,6 +19,9 @@ var app = $.sammy('#main', function() {
     });
 
     if (votes_array == {}) { fill_with_default(votes_array, "blank"); }
+    */
+
+    var votes_array = {};
 
     this.get('#/', function(context){
         this.redirect('#/1');
@@ -103,7 +109,7 @@ var app = $.sammy('#main', function() {
            //dont add blank lists to votes_array
            //add_to_votes_array(votes_array, selected_candidate_list, current_post_id);
            votes_array[current_post_id] = selected_candidate_list;
-           this.session('votes_array', votes_array);
+           //this.session('votes_array', votes_array);
        }
     });
 

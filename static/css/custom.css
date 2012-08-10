@@ -28,6 +28,18 @@ footer {
     margin: 20px 0px;
 }
 
+.splash h3 {
+    margin: 20px;
+}
+
+.splash h4 {
+    margin: 20px;
+}
+
+.splash small {
+    margin-bottom: 20px;
+}
+
 .splash .btn {
     margin-top: 15px;
 }
