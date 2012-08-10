@@ -103,35 +103,19 @@ def get_candidate_dict():
         candidates_dict[post] = Candidate.query.filter_by(post_id=post.id).all()
     return candidates_dict
 
-@app.route('/', methods=["GET", "POST"])
+@app.route('/')
 def voting_page():
-    if request.method == "GET":
-        if not session.get('logged_in'):
-            flash("You need to login before you can start voting", "info")
-            return redirect(url_for('login'))
+    if not session.get('logged_in'):
+        flash("You need to login before you can start voting", "info")
+        return redirect(url_for('login'))
+    else:
+        candidates_dict = get_candidate_dict()
+        if session.get("hostel"):
+            user_hostel = session["hostel"]
+            valid_post_list = db.session.query(Post).filter(or_(Post.applied_hostel == "LVH", Post.applied_hostel == "all")).all()
         else:
-            candidates_dict = get_candidate_dict()
-            if session.get("hostel"):
-                user_hostel = session["hostel"]
-                valid_post_list = db.session.query(Post).filter(or_(Post.applied_hostel == "LVH", Post.applied_hostel == "all")).all()
-            else:
-                valid_post_list = Post.query.all()
-            return render_template("voting_page.html", candidates_dict = candidates_dict, valid_post_list = valid_post_list)
-
-    else: #POST request
-        # logging logic goes here
-        # make sure to redirect to logout page
-        # after submission is done
-        user_coupon = Coupon.query.filter_by(username=session['username']).first()
-        try:
-            user_coupon.is_valid = False
-            db.session.add(user_coupon)
-            db.session.flush()
-        except sqlalchemy.exc.IntegrityError as err:
-            app.logger.error("Failed to invalidate coupon")
-            return "Failed to invalidate coupon"
-        db.session.commit()
-        return "Coupon has been invalidated"
+            valid_post_list = Post.query.all()
+        return render_template("voting_page.html", candidates_dict = candidates_dict, valid_post_list = valid_post_list)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -185,6 +169,7 @@ def logout():
     c = Coupon.query.filter_by(username = username).first()
     if c:
         c.is_valid = False
+        app.logger.warning("%s - coupon invalidated" % username)
         db.session.add(c)
         db.session.commit()
     session.pop('logged_in', None)
@@ -194,17 +179,14 @@ def logout():
     flash("You have successfully logged out", "success")
     return redirect(url_for('login'))
 
-@app.route('/admin', methods=['POST', 'GET'])
+@app.route('/admin')
 def admin():
-    if request.method == "POST":
-        pass
-    else: #request method is get
-        if not session.get('is_admin'):
-            flash("You need to log in as admin to view the admin page", "error")
-            return redirect(url_for('login'))
-        else:
-            posts = Post.query.all()
-            return render_template("admin_interface.html", posts = posts)
+    if not session.get('is_admin'):
+        flash("You need to log in as admin to view the admin page", "error")
+        return redirect(url_for('login'))
+    else:
+        posts = Post.query.all()
+        return render_template("admin_interface.html", posts = posts)
 
 @app.route('/coupon/new', methods=['POST'])
 def generate_coupon():
@@ -222,6 +204,7 @@ def generate_coupon():
             app.logger.warning("Duplicate entry hit for new coupon : %r" % value)
         finally:
             db.session.commit()
+            app.logger.warning("New coupon created for %s" % username)
             return jsonify(coupon=value, msg="Success")
     else:
         return jsonify(coupon=value, msg="Incorrect Admin password")
@@ -233,9 +216,13 @@ def delete_coupon():
     password = request.form['password']
     if password == app.config['PASSWORD']:
         c = Coupon.query.filter_by(username = username).first()
-        db.session.delete(c)
-        db.session.commit()
-        return jsonify(msg="Done!")
+        if c:
+            db.session.delete(c)
+            db.session.commit()
+            app.logger.warning("Coupon deleted for %s" % username)
+            return jsonify(msg="Done!")
+        else:
+            return jsonify(msg="No such user exists!")
     else:
         return jsonify(msg="Incorrect Admin Password")
 
@@ -268,6 +255,7 @@ def save_candidate():
         c1 = Candidate(username, full_name, hostel, candidate_post.id, dept, add_yesno)
         db.session.add(c1)
         db.session.commit()
+        app.logger.warning('Candidate - %s added to the database' % username)
         return jsonify(status_msg="Added %s" % username)
     else:
         return jsonify(status_msg="To add a blank user, enter blank in username field")
@@ -289,12 +277,6 @@ def fetch_candidate_details(username):
                                     hostel=candidate_details["hostel"])
     else:
         return jsonify(name="No candidate found!")
-
-
-#@app.route('/candidates')
-#def return_candidates():
-#    candidates = Candidate.query.all()
-#    return render_template('list_candidates', candidates = candidates)
 
 
 @app.route('/post/<int:post_id>')
