@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, render_template, abort, \
                   session, g, redirect, flash, url_for, Response
 from lib import ldap_helper
-import logging
 import config
 from time import strftime
 import string
@@ -10,11 +9,19 @@ import simplejson as json
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 import MySQLdb
+import logging
 
 app = Flask(__name__)
 app.config.from_object(config.DevelopmentConfig)
 db = SQLAlchemy(app)
 db.create_all()
+
+
+#logging config
+file_handler = logging.FileHandler(filename = app.config['LOG_FILENAME'])
+file_handler.setLevel(logging.WARNING)
+file_handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
+app.logger.addHandler(file_handler)
 
 ### MODELS ###
 class Coupon(db.Model):
@@ -333,14 +340,13 @@ def submit_votes():
         votes = json.loads(request.form.items()[0][0])
         # votes is now a dict with (k,v) => (post_id, [votes_list])
         current_user = session["username"]
-        print votes
+        app.logger.warning("Vote: %s - " % current_user + str(votes))
         for i in votes:
             candidates = votes[i]
             for c in candidates:
                 db.session.add(Vote(current_user, c, int(i), posts[int(i)]))
         db.session.commit()
         return jsonify(status="Votes successfully added")
-
 
 if __name__ == "__main__":
     app.run()
