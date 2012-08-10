@@ -174,6 +174,12 @@ def login():
 
 @app.route('/logout')
 def logout():
+    username = session.get("username")
+    c = Coupon.query.filter_by(username = username).first()
+    if c:
+        c.is_valid = False
+        db.session.add(c)
+        db.session.commit()
     session.pop('logged_in', None)
     session.pop('username', None)
     session.pop('is_admin', None)
@@ -214,21 +220,17 @@ def generate_coupon():
         return jsonify(coupon=value, msg="Incorrect Admin password")
 
 
-
 @app.route('/coupon/delete', methods=["POST"])
 def delete_coupon():
     username = request.form['username']
     password = request.form['password']
     if password == app.config['PASSWORD']:
         c = Coupon.query.filter_by(username = username).first()
-        print c.value
         db.session.delete(c)
         db.session.commit()
         return jsonify(msg="Done!")
     else:
         return jsonify(msg="Incorrect Admin Password")
-
-
 
 @app.route('/candidate/new', methods=['POST'])
 def save_candidate():
