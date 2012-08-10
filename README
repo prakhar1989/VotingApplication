@@ -2,3 +2,6 @@ Voting Application made for IIM Calcutta.
 - Flask
 - MySQL
 - LDAP
+
+Mysql Dump
+- select * into outfile '/tmp/votes.csv' fields terminated by ',' from vote;
