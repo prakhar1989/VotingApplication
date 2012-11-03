@@ -12,15 +12,16 @@ import MySQLdb
 import logging
 
 app = Flask(__name__)
+# remember to change this to development when deploying
 app.config.from_object(config.DevelopmentConfig)
 db = SQLAlchemy(app)
 db.create_all()
 
 #logging config
-file_handler = logging.FileHandler(filename = app.config['LOG_FILENAME'])
-file_handler.setLevel(logging.WARNING)
-file_handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
-app.logger.addHandler(file_handler)
+# file_handler = logging.FileHandler(filename = app.config['LOG_FILENAME'])
+# file_handler.setLevel(logging.WARNING)
+# file_handler.setFormatter(logging.Formatter(app.config['LOG_FORMAT']))
+# app.logger.addHandler(file_handler)
 
 ### MODELS ###
 class Coupon(db.Model):
@@ -174,7 +175,7 @@ def logout():
     c = Coupon.query.filter_by(username = username).first()
     if c:
         c.is_valid = False
-        app.logger.warning("%s - coupon invalidated" % username)
+        # app.logger.warning("%s - coupon invalidated" % username)
         db.session.add(c)
         db.session.commit()
     session.pop('logged_in', None)
@@ -206,10 +207,10 @@ def generate_coupon():
         except sqlalchemy.exc.IntegrityError as err:
             #this fails in the rare event value already exists
             value = "".join(random.choice(string.letters) for j in range(1,10))
-            app.logger.warning("Duplicate entry hit for new coupon : %r" % value)
+            #app.logger.warning("Duplicate entry hit for new coupon : %r" % value)
         finally:
             db.session.commit()
-            app.logger.warning("New coupon created for %s" % username)
+            # app.logger.warning("New coupon created for %s" % username)
             return jsonify(coupon=value, msg="Success")
     else:
         return jsonify(coupon=value, msg="Incorrect Admin password")
@@ -224,7 +225,7 @@ def delete_coupon():
         if c:
             db.session.delete(c)
             db.session.commit()
-            app.logger.warning("Coupon deleted for %s" % username)
+            # app.logger.warning("Coupon deleted for %s" % username)
             return jsonify(msg="Done!")
         else:
             return jsonify(msg="No such user exists!")
@@ -260,7 +261,7 @@ def save_candidate():
         c1 = Candidate(username, full_name, hostel, candidate_post.id, dept, add_yesno)
         db.session.add(c1)
         db.session.commit()
-        app.logger.warning('Candidate - %s added to the database' % username)
+        # app.logger.warning('Candidate - %s added to the database' % username)
         return jsonify(status_msg="Added %s" % username)
     else:
         return jsonify(status_msg="To add a blank user, enter blank in username field")
@@ -327,7 +328,7 @@ def submit_votes():
         votes = json.loads(request.form.items()[0][0])
         # votes is now a dict with (k,v) => (post_id, [votes_list])
         current_user = session["username"]
-        app.logger.warning("Vote: %s - " % current_user + str(votes))
+        # app.logger.warning("Vote: %s - " % current_user + str(votes))
         for i in votes:
             candidates = votes[i]
             for c in candidates:

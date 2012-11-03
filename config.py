@@ -8,7 +8,6 @@ class Config(object):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql://root:prakhar@localhost/voting_app'
-    LOG_FILENAME = 'extras/production.log'
 
 class DevelopmentConfig(Config):
     DEBUG = True
