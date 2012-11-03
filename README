@@ -4,4 +4,4 @@ Voting Application made for IIM Calcutta.
 - LDAP
 
 Mysql Dump
-- select * into outfile '/tmp/votes.csv' fields terminated by ',' from vote;
+- select * into outfile "votes.csv" fields terminated by ',' from vote;

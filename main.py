@@ -16,7 +16,6 @@ app.config.from_object(config.DevelopmentConfig)
 db = SQLAlchemy(app)
 db.create_all()
 
-
 #logging config
 file_handler = logging.FileHandler(filename = app.config['LOG_FILENAME'])
 file_handler.setLevel(logging.WARNING)
@@ -57,7 +56,6 @@ class Post(db.Model):
     def __repr__(self):
         return "<Post %r>" % self.name
 
-
 class Candidate(db.Model):
     name = db.Column(db.String(80), primary_key=True)
     full_name = db.Column(db.String(200))
@@ -94,7 +92,6 @@ class Vote(db.Model):
        return "<Vote | voter_name: %r -> candidate_name: %r for %r" % (self.voter_name,
                                     self.candidate_name, self.post_id)
 
-
 ### CONTROLLER ###
 def get_candidate_dict():
     candidates_dict = {}
@@ -130,6 +127,14 @@ def login():
         if username == "" or password == "" or coupon_code =="" :
             flash('Invalid username/password/coupon combination', 'error')
             return render_template("login.html")
+
+        elif coupon_code == "ec" and username == "ec" and \
+            ldap_helper.ldap_authenticate(username, password):
+                session['logged_in'] = True
+                session['is_admin'] = True
+                session['username'] = username
+                flash("Welcome EC", "success")
+                return redirect(url_for('admin'))
 
         elif user_coupon and user_coupon.is_valid == False:
             flash("This coupon has been invalidated. You can only vote once with a coupon", "error")
@@ -329,6 +334,21 @@ def submit_votes():
                 db.session.add(Vote(current_user, c, int(i), posts[int(i)]))
         db.session.commit()
         return jsonify(status="Votes successfully added")
+
+@app.route('/getresults')
+def download():
+    if not session.get('is_admin'):
+        flash("You need to log in as admin to view the admin page", "error")
+        return redirect(url_for('login'))
+    else:
+        votes = Vote.query.all()
+        f = open("/home/prakhar/Code/voting_app/static/votes.csv", 'w')
+        f.write("voter_name,candidate_name,post_name\n")
+        for v in votes:
+            f.write("%s,%s,%s\n" % (v.voter_name, \
+                v.candidate_name, v.post_name))
+
+        return "<a href='/static/votes.csv'>Download file</a>"
 
 if __name__ == "__main__":
     app.run()
