@@ -145,6 +145,12 @@ section{
     margin-left: 130px;
 }
 
+#abstain_notif {
+    float: left;
+    display: none;
+    margin-top: 20px;
+    margin-left: 130px;
+}
 #status {
     display: none;
 }

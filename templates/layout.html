@@ -21,6 +21,12 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
+    {% if session.is_pgpex %}
+      <script>
+        window.is_pgpex = true;
+      </script>
+    {% endif %}
+
   </head>
 
   <body>
@@ -33,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/">Voting App</a>
+          <a class="brand" href="/election">Voting App</a>
           <div class="nav-collapse">
             {% if session.logged_in %}
             <ul class="nav pull-right">
@@ -50,7 +56,14 @@
                 <li><a id="modalClick" data-toggle="modal" href="#myModal">Help</a></li>
                 <li class="divider-vertical"></li>
                 {% if session.is_admin %}
-                    <li><a href="{{ url_for('admin') }}">Admin Section</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin Actions<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="admin">Admin Section</a></li>
+                    <li><a href="/#/1">Voting Page</a></li>
+                    <li><a href="/getresults">Donwload Results</a></li>
+                  </ul>
+              </li>
                 {% endif %}
                 <li class="logout"><a id="logoutBtn" href="{{ url_for('logout') }}">Logout</a></li>
             {% endif %}

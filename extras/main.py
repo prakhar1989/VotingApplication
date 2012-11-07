@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template, abort, \
-                  session, g, redirect, flash, url_for, Response, make_response
+                  session, g, redirect, flash, url_for, Response
 from lib import ldap_helper
 import config
 from time import strftime
@@ -13,7 +13,7 @@ import logging
 
 app = Flask(__name__)
 # remember to change this to development when deploying
-app.config.from_object(config.DevelopmentConfig)
+app.config.from_object(config.ProductionConfig)
 db = SQLAlchemy(app)
 db.create_all()
 
@@ -110,7 +110,7 @@ def voting_page():
         candidates_dict = get_candidate_dict()
         if session.get("hostel"):
             user_hostel = session["hostel"]
-            valid_post_list = db.session.query(Post).filter(or_(Post.applied_hostel == user_hostel, Post.applied_hostel == "all")).all()
+            valid_post_list = db.session.query(Post).filter(or_(Post.applied_hostel == "LVH", Post.applied_hostel == "all")).all()
         else:
             valid_post_list = Post.query.all()
         return render_template("voting_page.html", candidates_dict = candidates_dict, valid_post_list = valid_post_list)
@@ -153,11 +153,7 @@ def login():
                 user_coupon and user_coupon.value == coupon_code:
 
             user_hostel = ldap_helper.ldap_fetch_detail(username, ["hostel"])
-            user_dept = ldap_helper.ldap_fetch_detail(username,
-                            ["departmentNumber"]).get("departmentNumber")
             if user_hostel:
-                if user_dept == "PGDM":
-                    session["is_pgpex"] = True
                 session['hostel'] = user_hostel["hostel"]
                 session['logged_in']= True
                 session['username'] = username
@@ -186,7 +182,6 @@ def logout():
     session.pop('username', None)
     session.pop('is_admin', None)
     session.pop('hostel', None)
-    session.pop('is_pgpex', None)
     flash("You have successfully logged out", "success")
     return redirect(url_for('login'))
 
@@ -246,7 +241,7 @@ def save_candidate():
     else:
         add_yesno = False
     user_details = ldap_helper.ldap_fetch_detail(username,
-                   ["hostel", "displayName", "departmentNumber"])
+                                                ["hostel", "displayName", "departmentNumber"])
     if username:
         candidate_post = Post.query.filter_by(name=post_select).first()
         if username != 'abstain':
@@ -341,29 +336,6 @@ def submit_votes():
         db.session.commit()
         return jsonify(status="Votes successfully added")
 
-@app.route('/getresults')
-def download():
-    if not session.get('is_admin'):
-        flash("You need to log in as admin to view the admin page", "error")
-        return redirect(url_for('login'))
-    else:
-        def generate():
-            dept_dict = {}
-            votes = Vote.query.all()
-            yield "voter_name,candidate_name, post_name,candidate_batch\n"
-            for v in votes:
-                if v.candidate_name not in dept_dict:
-                    dept = ldap_helper.ldap_fetch_detail(v.candidate_name,
-                            ["departmentNumber"]).get("departmentNumber")
-                    dept_dict[v.candidate_name] = dept
-                else:
-                    dept = dept_dict[v.candidate_name]
-
-                yield "%s,%s,%s,%s" % (v.voter_name, \
-                    v.candidate_name, v.post_name, dept) + '\n'
-
-        return Response(generate(), mimetype="text/csv")
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
+    app.run()

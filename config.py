@@ -7,7 +7,10 @@ class Config(object):
     LOG_FILENAME = 'extras/dev.log'
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:prakhar@localhost/voting_app'
+    USERNAME = 'admin'
+    PASSWORD = 'admin'
+    ADMIN_COUPON = 'admin'
+    SQLALCHEMY_DATABASE_URI = 'mysql://election:election@localhost/election'
 
 class DevelopmentConfig(Config):
     DEBUG = True

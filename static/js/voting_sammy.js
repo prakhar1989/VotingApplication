@@ -65,7 +65,7 @@ var app = $.sammy('#main', function() {
         this.trigger('addVotesInArray');
         context.app.swap('');
 
-        this.load('/post/' +  this.params['post_id'])
+        this.load('post/' +  this.params['post_id'])
             .then(function(candidates){
                 //Use post data generated to add help_text for each post generated
                 $('.post_heading').text(candidates[0][0]["post_name"]);

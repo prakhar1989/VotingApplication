@@ -215,9 +215,7 @@
     })
   })
 
-}(window.jQuery);- Design ideas :
-  http://coderwall.com/shanselman 
-  http://convore.com/ 
+}(window.jQuery);
 
 
 

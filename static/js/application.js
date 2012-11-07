@@ -1,5 +1,14 @@
 $(function() {
     //hide the show_message label by default
+   if (window.is_pgpex){
+      $('.sidebar .nav li').each(function(){ 
+        if($(this).text() == "Placement Representative " || 
+          $(this).text() == "PGP Representative "){ 
+          $(this).hide();
+        }
+      });
+   }
+    
     $('.coupon_gen').hide();
 
     $('#logoutBtn').click(function(e){
@@ -78,22 +87,51 @@ $(function() {
         if (current_count > max_votes_for_post) {
             alert("Please select the valid number of candidates before proceeding");
             return false;
+        } else if (window.abstainSelected && current_count > 1) {
+            alert("You cant select abstain with any other candidate");
+            return false;
         } else {
             $(this).parent().siblings().removeClass('active');
             $(this).parent().toggleClass('active');
         }
     });
 
+    window.abstainSelected = false;
+
     $('#main').delegate(".candidate-tile", "click", function(e){
         $(this).toggleClass("candidate_selected");
         $(this).find('.checkbox').toggleClass('checkbox_selected');
         var max_votes_for_post = $('.post_heading').data('maxCount');
         var current_count = $('.candidate_selected').length;
+    
+
+        if ($(this).data("username") == "abstain"){
+          if (window.abstainSelected) {
+            window.abstainSelected = false;
+            
+          } else {
+            window.abstainSelected = true;
+          }
+        }
+
+        if (window.abstainSelected && current_count > 1) {
+            $('#abstain_notif').html("<strong>Error</strong> You" + 
+              " cant select abstain along with any other candidate"); 
+            $('#abstain_notif').slideDown(); 
+        } else {
+            $('#abstain_notif').slideUp();
+        }
+
         if (current_count > max_votes_for_post) {
-            $('#error_notif').html("<strong>Error</strong> Please select at max " + max_votes_for_post + " candidate(s) for this post");
+            $('#error_notif').html("<strong>Error</strong> Please select at max " 
+              + max_votes_for_post + " candidate(s) for this post");
             $('#error_notif').slideDown();
         } else {
             $('#error_notif').slideUp();
         }
+
+
     });
+
+
 });
