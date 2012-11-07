@@ -16,7 +16,7 @@ def connect_ldap():
     successful
     """
     try:
-        l = ldap.open("192.168.1.103")
+        l = ldap.open(hostname)
         return l
     except ldap.LDAPERROR, e:
         print e
