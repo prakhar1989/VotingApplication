@@ -3,11 +3,13 @@ from flask import Flask, jsonify, request, render_template, abort, \
 from lib import ldap_helper
 import config
 from time import strftime
+import datetime
+import time
 import string
 import random
 import simplejson as json
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 import MySQLdb
 import logging
 
@@ -64,14 +66,16 @@ class Candidate(db.Model):
     hostel = db.Column(db.String(80))
     dept = db.Column(db.String(80)) #Department Number
     yes_no = db.Column(db.Boolean)
+    regno = db.Column(db.String(80))
 
-    def __init__(self, name, full_name, hostel, post_id, dept, yes_no):
+    def __init__(self, name, full_name, hostel, post_id, dept, yes_no, regno):
         self.name = name
         self.full_name = full_name
         self.hostel = hostel
         self.post_id = post_id
         self.yes_no = yes_no
         self.dept = dept
+        self.regno = regno
 
     def __repr__(self):
         return "<Candidate: %r, Post: %r>" % (self.name, self.post.name)
@@ -82,16 +86,30 @@ class Vote(db.Model):
     candidate_name = db.Column(db.String(80))
     post_id = db.Column(db.Integer)
     post_name = db.Column(db.String(80))
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.now())
 
     def __init__(self, voter_name, candidate_name, post_id, post_name):
        self.voter_name = voter_name
        self.candidate_name = candidate_name
        self.post_id = post_id
        self.post_name = post_name
+       self.timestamp = datetime.datetime.now()
 
     def __repr__(self):
        return "<Vote | voter_name: %r -> candidate_name: %r for %r" % (self.voter_name,
                                     self.candidate_name, self.post_id)
+
+class Dbcounter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(80))
+    timestamp = db.Column(db.DateTime)
+
+    def __init__(self, user):
+        self.user = user
+        self.timestamp = datetime.datetime.now()
+
+    def __repr__(self):
+        return "%r accessed results at %r" % (self.user, self.timestamp)
 
 ### CONTROLLER ###
 def get_candidate_dict():
@@ -114,7 +132,6 @@ def voting_page():
         else:
             valid_post_list = Post.query.all()
         return render_template("voting_page.html", candidates_dict = candidates_dict, valid_post_list = valid_post_list)
-
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -237,6 +254,18 @@ def delete_coupon():
     else:
         return jsonify(msg="Incorrect Admin Password")
 
+
+@app.route('/candidate/delete', methods=["POST"])
+def delete_candidate():
+    username = request.form["username"]
+    c = Candidate.query.filter_by(name=username).first()
+    if c:
+        db.session.delete(c)
+        db.session.commit()
+        return jsonify(msg = "%s deleted successfully!" % username)
+    else:
+        return jsonify(msg = "No such user exists")
+
 @app.route('/candidate/new', methods=['POST'])
 def save_candidate():
     username = request.form['username']
@@ -246,24 +275,26 @@ def save_candidate():
     else:
         add_yesno = False
     user_details = ldap_helper.ldap_fetch_detail(username,
-                   ["hostel", "displayName", "departmentNumber"])
+                   ["hostel", "displayName", "departmentNumber", "regNo"])
     if username:
         candidate_post = Post.query.filter_by(name=post_select).first()
-        if username != 'abstain':
-            if user_details:
-                hostel = user_details["hostel"]
-                full_name = user_details["displayName"]
-                dept = user_details["departmentNumber"]
-            else:  #its Blank or Abstain
-                hostel = "All"
-                full_name = username
-                dept = "None" #TODO: Not to sure if this is how it should be
+        if username.lower() == 'abstain':
+            hostel = "All"
+            full_name = username.capitalize()
+            dept = "None"
+            regNo = "NA"
+        elif username.lower() == "blank":
+            hostel = "All"
+            full_name = username.capitalize()
+            dept = "None"
+            regNo = "NA"
         else:
-            full_name = "Abstain"
-            hostel = "NA"
-            dept = "NA"
+            hostel = user_details["hostel"]
+            full_name = user_details["displayName"]
+            dept = user_details["departmentNumber"]
+            regNo = user_details["regNo"]
 
-        c1 = Candidate(username, full_name, hostel, candidate_post.id, dept, add_yesno)
+        c1 = Candidate(username, full_name, hostel, candidate_post.id, dept, add_yesno, regNo)
         db.session.add(c1)
         db.session.commit()
         # app.logger.warning('Candidate - %s added to the database' % username)
@@ -274,18 +305,27 @@ def save_candidate():
 
 @app.route('/candidate/<username>')
 def fetch_candidate_details(username):
-    attr_list = ["departmentNumber", "displayName", "hostel"]
+    attr_list = ["departmentNumber", "displayName", "hostel", "regNo"]
     candidate_details = ldap_helper.ldap_fetch_detail(username, attr_list)
     img_url = "http://student.iimcal.ac.in/userimages/%s.jpg" % username
     if username == "abstain":
         img_url = "http://upload.wikimedia.org/wikipedia/en/thumb/7/78/Trollface.svg/200px-Trollface.svg.png"
         return jsonify(image_url=img_url, dept="NA",
                                     name="Abstain",
-                                    hostel="NA")
+                                    hostel="NA",
+                                    regno="NA")
+    elif username == "blank":
+        img_url = "http://www.wpclipart.com/blanks/shapes/star_with_blank_text_space..png"
+        return jsonify(image_url=img_url, dept="NA",
+                                    name="Blank",
+                                    hostel="NA",
+                                    regno="NA")
+
     if candidate_details:
         return jsonify(image_url=img_url, dept=candidate_details["departmentNumber"],
                                     name=candidate_details["displayName"],
-                                    hostel=candidate_details["hostel"])
+                                    hostel=candidate_details["hostel"],
+                                    regno=candidate_details["regNo"])
     else:
         return jsonify(name="No candidate found!")
 
@@ -301,16 +341,28 @@ def fetch_post_details(post_id):
         "post_applied_hostel" : post.applied_hostel,
         "post_help_text"      : post.help_text
     })
-    post_candidate_details = Candidate.query.filter_by(post_id=post_id).all()
+    post_candidate_details = Candidate.query.filter_by(post_id=post_id)\
+                             .order_by(Candidate.dept.desc()).order_by(Candidate.full_name).all()
     for c in post_candidate_details:
         if c.name == "abstain":
             post_json[1].append({
                 "username" : c.name,
-                "name"     : c.full_name,
+                "name"     : "Abstain",
                 "dept"     : c.dept,
                 "image"    : "http://upload.wikimedia.org/wikipedia/en/thumb/7/78/Trollface.svg/200px-Trollface.svg.png",
                 "hostel"   : c.hostel,
-                "yes_no"   : c.yes_no
+                "yes_no"   : c.yes_no,
+                "regno"    : c.regno
+            })
+        elif c.name == "blank":
+            post_json[1].append({
+                "username" : c.name,
+                "name"     : "Blank",
+                "dept"     : c.dept,
+                "image"    : "http://www.wpclipart.com/blanks/shapes/star_with_blank_text_space..png",
+                "hostel"   : c.hostel,
+                "yes_no"   : c.yes_no,
+                "regno"    : c.regno
             })
         else:
             post_json[1].append({
@@ -319,7 +371,8 @@ def fetch_post_details(post_id):
                 "dept"     : c.dept,
                 "image"    : "http://student.iimcal.ac.in/userimages/%s.jpg" % c.name,
                 "hostel"   : c.hostel,
-                "yes_no"   : c.yes_no
+                "yes_no"   : c.yes_no,
+                "regno"    : c.regno
             })
     return Response(json.dumps(post_json), mimetype='application/json')
 
@@ -341,29 +394,69 @@ def submit_votes():
         db.session.commit()
         return jsonify(status="Votes successfully added")
 
-@app.route('/getresults')
+@app.route('/getresults.csv')
 def download():
     if not session.get('is_admin'):
         flash("You need to log in as admin to view the admin page", "error")
         return redirect(url_for('login'))
     else:
+        username = session["username"]
+        db.session.add(Dbcounter(username))
+        db.session.commit()
+
         def generate():
             dept_dict = {}
             votes = Vote.query.all()
-            yield "voter_name,candidate_name, post_name,candidate_batch\n"
+            yield "timestamp,voter_name,candidate_name, post_name,candidate_batch\n"
             for v in votes:
-                if v.candidate_name not in dept_dict:
-                    dept = ldap_helper.ldap_fetch_detail(v.candidate_name,
-                            ["departmentNumber"]).get("departmentNumber")
-                    dept_dict[v.candidate_name] = dept
-                else:
-                    dept = dept_dict[v.candidate_name]
+                if v.candidate_name == "blank" or v.candidate_name == "abstain":
+                    yield "%s,%s,%s,%s,%s" % (v.timestamp, v.voter_name, \
+                        v.candidate_name, v.post_name, "none") + '\n'
 
-                yield "%s,%s,%s,%s" % (v.voter_name, \
-                    v.candidate_name, v.post_name, dept) + '\n'
+                else:
+                    if v.candidate_name not in dept_dict:
+                        dept = ldap_helper.ldap_fetch_detail(v.candidate_name,
+                                ["departmentNumber"]).get("departmentNumber")
+                        dept_dict[v.candidate_name] = dept
+                    else:
+                        dept = dept_dict[v.candidate_name]
+                    yield "%s,%s,%s,%s,%s" % (v.timestamp, v.voter_name, \
+                        v.candidate_name, v.post_name, dept) + '\n'
 
         return Response(generate(), mimetype="text/csv")
 
+@app.route('/getcount.json', methods=["POST"])
+def get_count():
+    if not session.get("is_admin"):
+        flash("You need to log in as admin to view the admin page", "error")
+        return redirect(url_for("login"))
+    else:
+        if request.method == "POST":
+            post_select = request.form['post_select']
+            count_dict = {}
+            # count = db.session.query(Vote.candidate_name, func.count(Vote.candidate_name)).\
+            # group_by(Vote.candidate_name).all()
+            count = db.session.query(Vote.candidate_name, func.count(Vote.candidate_name)).\
+                    filter(Vote.post_name == post_select).group_by(Vote.candidate_name).all()
+            for c in count:
+                count_dict[c[0]] = c[1]
+            return jsonify(count_dict)
+
+
+@app.route('/seeresults')
+def see_results():
+    if not session.get("is_admin"):
+        flash("You need to log in as admin to view the admin page", "error")
+        return redirect(url_for("login"))
+    else:
+        # log access
+        username = session["username"]
+        db.session.add(Dbcounter(username))
+        db.session.commit()
+
+        # display
+        valid_post_list = Post.query.all()
+        return render_template("seeresults.html", posts = valid_post_list)
+
 if __name__ == "__main__":
     app.run(debug=True)
-

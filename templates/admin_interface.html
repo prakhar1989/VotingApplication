@@ -108,5 +108,25 @@
     </div>
 </div>
 </section>
+<section>
+<div class='white_tile'>
+    <div class="page-header">
+        <h2>Delete candidates <small> made a mistake? </small></h2>
+    </div>
+    <div class="row">
+        <div class="span8">
+            <form id="delete_candidate_form" method="POST" action="/candidate/delete" class="well form-inline">
+                <input type="text" class="input" name="username" placeholder="e.g. prakhars2013">
+                <input type="submit" class="btn btn-inverse" value="Delete Candidate"></button>
+            </form>
+        </div>
+        <div class="span3">
+            <div class="candidate_delete_gen">
+                <h2 id="candidate_delete_message"></h2>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
 {% endblock %}
 

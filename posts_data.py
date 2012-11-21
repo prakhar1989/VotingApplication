@@ -125,6 +125,7 @@ posts = [
 ]
 
 def add_posts_to_db():
+    db.drop_all()
     db.create_all()
     for post in posts:
         db.session.add(Post(post["name"], post["max_votes"], post["applied_hostel"],

@@ -1,0 +1,82 @@
+<html>
+  <head>
+<script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<title>Plot Results</title>
+<style>
+  body {
+    background: #EDEDE9;
+  }
+  form {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+</style>
+  </head>
+  <body>
+  <div id="container" style="width: 600px; height: 800px; margin: 0 auto"></div>
+
+  <form action="/getcount.json" method="post" id="plot_graph">
+      <select name="post_select">
+          {% for post in posts %}
+          <option>{{ post.name }}</option>
+          {% endfor %}
+      </select>
+      <input type="submit" value="Plot"></input>
+  </form>
+
+  </body>
+<script type="text/javascript">
+
+    var chart;
+    var candidate_names = [];
+    var candidate_votes = [];
+
+  
+    $('#plot_graph').submit(function(){
+        $.ajax({
+          url: "getcount.json", 
+          type: "post",
+          dataType: "json",
+          data: $(this).serialize(),
+          async: false,
+          success: function(data){
+            candidate_names = [];
+            candidate_votes = [];
+            for (var cname in data){
+              candidate_names.push(cname);
+              candidate_votes.push(data[cname]);
+              plot_chart();
+            }
+          }    
+        });
+        return false;
+      });
+
+    var plot_chart = function() {
+        chart = new Highcharts.Chart({
+            chart: { renderTo: 'container', type: 'bar' },
+            title: { text: $('select option:selected').text() },
+            subtitle: { text: 'Candidate Votes' },
+            xAxis: { categories: candidate_names, title: { text: "Candidates" } },
+            yAxis: { min: 0,
+                title: { text: 'Total Votes', align: 'high' }, labels: { overflow: 'justify' }
+            },
+            tooltip: { formatter: function() { return ''+ this.series.name +': '+ this.y; } },
+            plotOptions: {
+                bar: { dataLabels: { enabled: true } }
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: "votes",
+                data: candidate_votes
+            }]
+        });
+    }
+
+</script>
+</html>

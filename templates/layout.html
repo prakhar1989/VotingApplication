@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/election">Voting App</a>
+          <a class="brand" href="/">Voting App</a>
           <div class="nav-collapse">
             {% if session.logged_in %}
             <ul class="nav pull-right">
@@ -61,7 +61,8 @@
                   <ul class="dropdown-menu">
                     <li><a href="admin">Admin Section</a></li>
                     <li><a href="/#/1">Voting Page</a></li>
-                    <li><a href="/getresults">Donwload Results</a></li>
+                    <li><a href="/getresults.csv">Donwload Results</a></li>
+                    <li><a href="/seeresults">See Results</a></li>
                   </ul>
               </li>
                 {% endif %}
@@ -95,7 +96,6 @@
 
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/modal.js')}}"></script>
     <script src="{{ url_for('static', filename='js/mustache.js')}}"></script>
     {% block custom_js %}{% endblock %}
     <script src="{{ url_for('static', filename='js/application.js')}}"></script>

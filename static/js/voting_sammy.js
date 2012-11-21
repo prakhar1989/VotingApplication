@@ -1,27 +1,9 @@
 (function($) {
 
-/*
-var fill_with_default = function(votes_array, default_string){
-    //instantiates votes_array to a default value
-    for(i=0; i<=20; i++){
-        votes_array[i] = default_string;
-    }
-}
-*/
-
 var app = $.sammy('#main', function() {
     this.use('Template');
-    /*
-    this.use('Session');
 
-    var votes_array = this.session('votes_array', function(){
-        return {};
-    });
-
-    if (votes_array == {}) { fill_with_default(votes_array, "blank"); }
-    */
-
-    var votes_array = {};
+    window.votes_array = {};
 
     this.get('#/', function(context){
         this.redirect('#/1');
@@ -85,7 +67,8 @@ var app = $.sammy('#main', function() {
                         }})
                     .then(function(){
                         var chosen_votes = votes_array[context.params['post_id']];
-                        if (chosen_votes && chosen_votes.length > 0 && chosen_votes != "blank") {
+                        //if (chosen_votes && chosen_votes.length > 0 && chosen_votes != "blank") {
+                        if (chosen_votes && chosen_votes.length > 0) {
                             for (i=0; i < chosen_votes.length; i++) {
                                 var u_name = chosen_votes[i];
                                 $('#main').find("[data-username='" + u_name + "']")

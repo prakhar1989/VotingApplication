@@ -42,6 +42,19 @@ $(function() {
         return false;
     });
 
+    $('#delete_candidate_form').submit(function(){
+        $.ajax({
+            url: $SCRIPT_ROOT+'/candidate/delete',
+            type: "POST",
+            data: $(this).serialize(),
+            success: function(data) {
+                $('#candidate_delete_message').text(data.msg);
+                $('.candidate_delete_gen').show();
+            }
+        });
+        return false;
+    });
+
     $('#user_name').focusout(function(){
         var username = $("#user_name").val().toLowerCase();
         var details_url = $SCRIPT_ROOT + '/candidate/' + username;
@@ -96,7 +109,9 @@ $(function() {
         }
     });
 
+    // abstain selection wizardry
     window.abstainSelected = false;
+    window.blankSelected = false;
 
     $('#main').delegate(".candidate-tile", "click", function(e){
         $(this).toggleClass("candidate_selected");
@@ -108,15 +123,22 @@ $(function() {
         if ($(this).data("username") == "abstain"){
           if (window.abstainSelected) {
             window.abstainSelected = false;
-            
           } else {
             window.abstainSelected = true;
           }
         }
 
-        if (window.abstainSelected && current_count > 1) {
+        if ($(this).data("username") == "blank"){
+          if (window.abstainSelected) {
+            window.blankSelected = false;
+          } else {
+            window.blankSelected = true;
+          }
+        }
+
+        if ((window.abstainSelected || window.blankSelected) && current_count > 1) {
             $('#abstain_notif').html("<strong>Error</strong> You" + 
-              " cant select abstain along with any other candidate"); 
+              " cant select <strong>abstain</strong> or <strong>blank</strong> along with any other candidate"); 
             $('#abstain_notif').slideDown(); 
         } else {
             $('#abstain_notif').slideUp();

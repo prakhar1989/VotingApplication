@@ -1,5 +1,5 @@
 # Voting Application
-Election Application made for university.  First attempt at an application using a Javascript MVC framework.
+Election Application made for university.  First attempt at an application using a Javascript MVC framework. Used [Highcharts](http://highcharts.com) for charting election results
 
 ## Stack -
 - python
@@ -9,3 +9,4 @@ Election Application made for university.  First attempt at an application using
 
 ## Screenshot - 
 ![shot] (http://dl.dropbox.com/u/9555677/s.png)
+
